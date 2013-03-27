@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load tabtags %}
+{% load render_table from django_tables2 %}
+
+{% block title %}MS {{ metasystem.id }}{% endblock %}
+
+{% block js %}
+{% if metasystem.has_systems %}
+    {% tabs_js 'Systems' 'Structure' 'Actions' 'View settings' %}
+{% else %}
+    {% tabs_js 'Structure' 'Actions' 'View settings' %}
+{% endif %}
+{% endblock %}
+
+{% block header %}
+MetaSystem {{metasystem.id}} "<a href="{% url edit_metasystem metasystem_id=metasystem.id %}">{{metasystem.name}}</a>"
+{% if metasystem.group.name %}(group: <a href="{% url show_metasystems group_id=metasystem.group.id %}">{{ metasystem.group.name }}</a>){% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% start_tabs %}
+
+<form action="" method="POST">
+{% csrf_token %}
+
+{% if metasystem.has_systems %}
+
+
+    {% render_table systems_table %}
+<script type="text/javascript" src="/static/fxheader1.js"></script>
+<script type="text/javascript">fxheaderInit('systable',600);</script>
+
+    { % next_tab % }
+
+{{ bookmarkform }}
+<input type="submit" name="action" value="Bookmark Selected" />
+<br/>
+<input type="submit" name="action" value="Delete" />
+
+    {% if filterformset %}
+<fieldset class="methodcontainer">
+<legend>Filters</legend>
+{{ filterformset.management_form }}
+        {% for form in filterformset.forms %}
+<p>{{ form }}</p>
+        {% endfor %}
+<div style="margin-top:1em">
+<input style="float:left;" type="submit" name="add" value="Add filter" />
+<input style="float:right;" type="submit" name="apply filters" value="Apply filters" />
+</div>
+</fieldset>
+<br />
+<input type="submit" name="todo" value="Delete filtered systems" />
+<input type="checkbox" name="confirm" value="filtered">
+<input type="submit" name="todo" value="Delete displayed systems" />
+<input type="checkbox" name="confirm" value="displayed">
+    {% endif %}
+
+    {% next_tab %}
+
+{% endif %}
+
+
+{% include "metasystem_structure.html" %}
+
+{% next_tab %}
+
+{% if metasystem.is_discretionary %}
+<h2>Discretionary Metasystem</h2>
+{{ metasystem.method_set.count }} systems (portfolios) exist.
+<br />Generate a new system (portfolio):
+<input type="submit" name="action" value="Start calculations" />
+{% else %}
+<h2>Backtesting</h2>
+    {% if metasystem.active %}This metasystem is running: 
+<input type="submit" name="action" value="Stop calculations" />
+    {% else %}This metasystem is not running:
+<input type="submit" name="action" value="Start calculations" />
+    {% endif %}
+<br />
+    {% if metasystem.is_randomisable %}
+Stop random calculations at {{ metasystem.maxresults }} backtest results.
+        {% if metasystem.conditions %}
+<br />Results will be saved if : {{ metasystem.conditions }}
+        {% endif %}
+    {% elif metasystem.is_traversable %}
+Total number of calculations to be carried out is: {{ metasystem.get_number_of_calculations }}
+    {% else %}
+This will be a single run.
+    {% endif %}
+{% endif %}
+
+{% if metasystem.system_set.count %}
+<h2>Backtest results summary</h2>
+Highest values in the backtest results are:
+<table>
+    {% for line in performance %}
+<tr><td>&nbsp;</td>
+        {% for cell in line %}
+            {% if forloop.first %}
+<td style="padding-left: 2em; padding-right: 1em;">{{ cell }}:</td>
+            {% else %}
+<td>{{ cell }}</td>
+            {% endif %}
+        {% endfor %}
+</tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+<h2>Copy system</h2>
+Copy all methods from this MetaSystem to another MetaSystem. Click the reverse checkbox to turn long methods into a shorts vice versa.
+<br>{{ copyform }}
+<input type="submit" name="copy" value="Copy this system" />
+
+{% next_tab %}
+
+#TODO: implement view settings - use a (standard?) form
+Show: <input type="checkbox" name="parameters" {% if view_settings.parameters %}checked="yes"{% endif %}>parameters</input>
+<input type="checkbox" name="performance" {% if view_settings.performance %}checked="yes"{% endif %}>performance</input>
+<input type="checkbox" name="result" {% if view_settings.result %}checked="yes"{% endif %}>result</input>
+<input type="submit" name="todo" value="Change View" />
+
+</form>
+
+{% end_tabs %}
+
+{% endblock %}

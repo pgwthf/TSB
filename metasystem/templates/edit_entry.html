@@ -1,0 +1,16 @@
+<div class="exitentry">
+<h3>Entry {{ forloop.parentloop.parentloop.counter }}.{{ forloop.counter }}: 
+{{ entryform.params.value.name|default:"New Entry" }}</h3>
+{{ entryform.params.value.description }}
+<table>
+<tr><th></th><td>
+{% for field in entryform %}
+	{% if field.is_hidden %}
+    	{{ field.as_hidden }}
+  	{% else %}
+</td></tr><tr><th>{{ field.label_tag }}:</th><td>{{field.errors}}{{ field }}
+  	{% endif %}
+{% endfor %}
+</td></tr>
+</table>
+</div>

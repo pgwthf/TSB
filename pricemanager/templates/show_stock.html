@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load tabtags %}
+
+{% block title %}{{ stock.name }}{% endblock %}
+
+{% block js %}
+{% if user.is_superuser %}
+    {% tabs_js 'Chart' 'Settings' 'Maintenance' %}
+{% else %}
+    {% tabs_js 'Chart' 'Settings' %}
+{% endif %}
+{% endblock %}
+
+{% block header %}
+View Stock: {{ stock.description}} ({{ stock.name }})
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block content %}
+
+{% start_tabs %}
+
+{% include "stock_data_fieldset.html" %}
+
+<img style="vertical-align:top;" src="{{ stockchart }}" />
+
+{% next_tab %}
+
+
+<form action="" method="POST">
+{% csrf_token %}
+<fieldset class="methodcontainer">
+<legend>Chart Settings</legend>
+Price data is available from {{ stock.get_earliest_date }} to {{ stock.get_latest_date }}
+<br>{{ stockchartform.as_table }}
+<div style="margin-top:0.5em">
+<input style="float:right;" type="submit" name="todo" value="Save settings" />
+</div>
+</fieldset>
+
+{% if user.is_superuser %}
+{% next_tab %}
+
+Price data is available from {{ stock.get_earliest_date }} to {{ stock.get_latest_date }}
+
+{% if missing_prices %}
+<h2>Warning: missing prices</h2>
+<input type="submit" name="todo" value="Download missing prices" />
+Prices are missing on the following dates:
+<table>
+{% for date in missing_prices %}
+<tr><td>{{ date|date:"Y-m-d" }}</td></tr>
+{% endfor %}
+</table>
+{% endif%}
+
+{% if missing_channels %}
+<h2>Warning: missing channel data</h2>
+<input type="submit" name="todo" value="Calculate missing channels" />
+Channel data is missing on the following dates:
+<table>
+{% for date in missing_channels %}
+<tr><td>{{ date|date:"Y-m-d" }}</td></tr>
+{% endfor %}
+</table>
+{% endif%}
+
+{% if splits %}
+<h2>Warning: stock splits detected</h2>
+<input type="submit" name="todo" value="Correct prices for split" />
+Splits may have occured on the following dates:
+<table>
+<tr><td>date</td><td>ratio</td></tr>
+{% for date, ratio in splits %}
+<tr><td style="padding-right:1em">{{ date|date:"Y-m-d" }}</td><td>{{ ratio|floatformat:2 }}</td></tr>
+{% endfor %}
+</table>
+{% endif%}
+</form>
+
+{% endif %}
+{% end_tabs %}
+
+{% endblock %}

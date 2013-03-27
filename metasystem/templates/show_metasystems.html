@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load tabtags %}
+
+{% block title %}Manage {% if group.name %}{{ group.name }}{% else %}{{ group }}{% endif %} MetaSystems{% endblock %}
+
+{% block js %}
+{% tabs_js 'MetaSystems' 'Groups' 'View' %}
+{% endblock %}
+
+{% block header %}All Metasystems{% if group %} from group {{ group.id }}: "{{ group.name }}"{% endif %}{% endblock %}
+
+consider moving this  ? to groups ?
+{% block menu %}
+<li><a href="#">Metasystems</a><ul>
+	<li><a href="{% url new_metasystem %}">New MetaSystem</a></li>
+</ul></li>
+{% endblock %}
+
+{% block content %}
+
+{% start_tabs %}
+
+<form method="POST">
+{% csrf_token %}
+{% load render_table from django_tables2 %}
+{% render_table metasystems_table %}
+<br><input type="submit" name="action" value="Copy">
+<input type="submit" name="action" value="Delete">
+</form>
+
+{% next_tab %}
+
+<p class="ruleheader"><a href="{% url show_metasystems %}">Show all MetaSystems</a></p>
+{% for group in groups %}
+<p class="ruleheader"><a href="{% url show_metasystems group_id=group.id %}">{{ group.name }}</a> ({{ group.metasystem_set.count }} metasystems)</p>
+{% if group.comments %}<p class="rulebody">{{ group.comments }}</p>{% endif %}
+{% endfor %}
+
+{% next_tab %}
+TODO: implement view options for 1st tab
+
+{% end_tabs %}
+
+{% endblock %}
+

@@ -1,0 +1,200 @@
+[
+    {
+        "pk": 1,
+        "model": "systemmanager.metasystem",
+        "fields": {
+            "startdate": "2012-08-19",
+            "enddate": "2012-08-25",
+            "name": "TestMeta",
+            "methodselector": "",
+            "allocation": "{}",
+            "comments": "",
+            "active": false,
+            "maxresults": 0,
+            "conditions": "",
+            "pool": 1,
+            "methods": [
+                1
+            ]
+        }
+    },
+    {
+        "pk": 1,
+        "model": "systemmanager.method",
+        "fields": {
+            "exits": [
+                1
+            ],
+            "comments": "Hallo",
+            "n_pos": 0,
+            "params": "{}",
+            "ls": 1,
+            "entries": [
+                1
+            ]
+        }
+    },
+    {
+        "pk": 1,
+        "model": "systemmanager.entry",
+        "fields": {
+            "params": "(dp1\nS'n_d'\np2\nI12\nsS'op'\np4\nS'lt'\np5\nsS'cls'\np6\nS'ma'\np7\nsS'at'\np8\nS'open'\np9\ns.",
+            "comments": "asdf"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "systemmanager.exit",
+        "fields": {
+            "params": "(dp1\nS'n_d'\np2\nI12\nsS'bd'\np3\nI5\nsS'op'\np4\nS'lt'\np5\nsS'cls'\np6\nS'ma'\np7\nsS'at'\np8\nS'open'\np9\ns.",
+            "comments": "asdf_exit"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "pricemanager.stock",
+        "fields": {
+            "currency": "USD",
+            "startdate": null,
+            "enddate": null,
+            "name": "AAPL",
+            "description": "Apple"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "pricemanager.stock",
+        "fields": {
+            "currency": "USD",
+            "startdate": null,
+            "enddate": null,
+            "name": "FDX",
+            "description": "FedEx"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "pricemanager.stock",
+        "fields": {
+            "currency": "USD",
+            "startdate": null,
+            "enddate": null,
+            "name": "INTC",
+            "description": "Intel"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "pricemanager.stock",
+        "fields": {
+            "currency": "USD",
+            "startdate": "2000-01-01",
+            "enddate": null,
+            "name": "^GSPC",
+            "description": "S&P500"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "pricemanager.stock",
+        "fields": {
+            "currency": "USD",
+            "startdate": "2012-08-20",
+            "enddate": null,
+            "name": "test",
+            "description": "ersdfg"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "pricemanager.pool",
+        "fields": {
+            "index": 4,
+            "startdate": "2010-01-05",
+            "enddate": null,
+            "name": "test",
+            "description": "test"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "pricemanager.pool",
+        "fields": {
+            "index": 4,
+            "startdate": "2010-01-05",
+            "enddate": null,
+            "name": "bJoV",
+            "description": ""
+        }
+    },
+    {
+        "pk": 1,
+        "model": "pricemanager.stockpooldates",
+        "fields": {
+            "startdate": "2010-01-20",
+            "enddate": null,
+            "pool": 1,
+            "stock": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "pricemanager.stockpooldates",
+        "fields": {
+            "startdate": "2010-01-05",
+            "enddate": "2011-01-05",
+            "pool": 1,
+            "stock": 3
+        }
+    },
+    {
+        "pk": 3,
+        "model": "pricemanager.stockpooldates",
+        "fields": {
+            "startdate": "2000-01-01",
+            "enddate": "2011-01-05",
+            "pool": 1,
+            "stock": 2
+        }
+    },
+    {
+        "pk": 5,
+        "model": "pricemanager.stockpooldates",
+        "fields": {
+            "startdate": "2010-01-20",
+            "enddate": null,
+            "pool": 2,
+            "stock": 1
+        }
+    },
+    {
+        "pk": 6,
+        "model": "pricemanager.stockpooldates",
+        "fields": {
+            "startdate": "2010-01-05",
+            "enddate": "2011-01-05",
+            "pool": 2,
+            "stock": 3
+        }
+    },
+    {
+        "pk": 7,
+        "model": "pricemanager.stockpooldates",
+        "fields": {
+            "startdate": "2000-01-01",
+            "enddate": "2011-01-05",
+            "pool": 2,
+            "stock": 2
+        }
+    },
+    {
+        "pk": 8,
+        "model": "pricemanager.stockpooldates",
+        "fields": {
+            "startdate": null,
+            "enddate": null,
+            "pool": 2,
+            "stock": 5
+        }
+    }
+]

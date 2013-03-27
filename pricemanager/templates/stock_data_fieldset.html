@@ -1,0 +1,41 @@
+<fieldset class="standard_container">
+
+<legend>Price Data:</legend>
+
+<table >
+<tr><td colspan=2><strong>On {{ data.date }}:</strong></td></tr>
+<tr><td>open</td><td>{{ data.open|floatformat:2 }}</td></tr>
+<tr><td>high</td><td>{{ data.high|floatformat:2 }}</td></tr>
+<tr><td>low</td><td>{{ data.low|floatformat:2 }}</td></tr>
+<tr><td>close</td><td>{{ data.close|floatformat:2 }}</td></tr>
+<tr><td>lookback</td><td>{{ data.lookback }}</td></tr>
+<tr><td>channel angle</td><td>{{ data.angle|floatformat:0 }}% per year</td></tr>
+<tr><td>channel width</td><td>{{ data.width|floatformat:0 }}%</td></tr>
+<tr><td style="padding-right:1em">channel bottom </td><td>{{ data.bottom|floatformat:2 }}</td></tr>
+<tr><td colspan=2><strong>Tomorrows values:</strong></td></tr>
+<tr><td>stop loss</td><td>{{ data.sl|floatformat:2 }}</td></tr>
+<tr><td>stop loss</td><td>{{ data.sl_c|floatformat:1 }}% under close</td></tr>
+<tr><td>stop loss</td><td>{{ data.sl_h|floatformat:1 }}% under high</td></tr>
+</table>
+
+<B>All lookbacks:</B>
+<table>
+<tr>
+<th>LB</th>
+<th>A</th>
+<th>W</th>
+<th>B</th>
+<th>SL</th>
+</tr>
+{% for c in data.channels %}
+<tr>
+<td style="padding-right:1em">{{ c.lookback }}</td>
+<td style="padding-right:1em">{{ c.angle|floatformat:0 }}</td>
+<td style="padding-right:1em">{{ c.width|floatformat:0 }}</td>
+<td style="padding-right:1em">{{ c.bottom|floatformat:2 }}</td>
+<td>{{ c.stoploss|floatformat:1 }}%</td>
+</tr>
+{% endfor %}
+</table>
+
+</fieldset>

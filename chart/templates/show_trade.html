@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load tabtags %}
+
+{% block title %}{{ trade.stock.name }} Trade{% endblock %}
+
+{% block js %}
+{% tabs_js 'Entry' 'Exit' 'Settings' %}
+{% endblock %}
+
+{% block header %}
+<div style="float:left;font-size: 80%;" >
+{% if prev_trade %}
+<a href="{{ prev_trade }}" title="{{ prev_trade }}">previous trade</a>
+{% else %}previous trade{% endif %}</div>
+View trade of <a href="{% url show_system system_id=trade.system.id %}">System {{ trade.system.id }}</a>
+<div style="float:right;font-size: 80%;" >
+{% if next_trade %}
+<a href="{{ next_trade }}" title="{{ next_trade }}">next trade</a>
+{% else %}next trade{% endif %}</div>
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block content %}
+
+{% start_tabs %}
+
+{% include "stock_data_fieldset.html" with data=entry_data %}
+
+<img style="vertical-align:top;" src="{{ entrychart }}" />
+
+{% next_tab %}
+
+
+{% include "stock_data_fieldset.html" with data=exit_data %}
+
+<img style="vertical-align:top;" src="{{ exitchart }}" />
+
+
+<fieldset class="standard_container">
+<legend>Trade Details:</legend>
+<table>
+<tr><td style="padding-right: 1em;">Entry price:</td><td>{{ trade.price_entry }}</td></tr>
+<tr><td>Entry date:</td><td>{{ trade.date_entry|date:"Y-m-d" }}</td></tr>
+<tr><td>Exit price:</td><td>{{ trade.price_exit }}</td></tr>
+<tr><td>Exit date:</td><td>{{ trade.date_exit|date:"Y-m-d" }}</td></tr>
+<tr><td>Gain:</td><td>{{ trade.gain|floatformat:1 }}%</td></tr>
+</fieldset>
+
+
+
+{% next_tab %}
+
+{% if stoplossform %}
+{% if stoploss.default %}No stop loss is defined, the default{% endif %}
+stoploss for {{ stoplossdate }} = {{ stoploss|floatformat:2 }}
+
+<form action="" method="POST">
+{% csrf_token %}
+<fieldset class="methodcontainer">
+<legend>Settings</legend>
+<br>{{ stoplossform.as_table }}
+<div style="margin-top:1em">
+<input style="float:right;" type="submit" name="todo" value="Save settings" />
+</div>
+</fieldset>
+</form>
+{% endif %}
+
+{% end_tabs %}
+
+{% endblock %}

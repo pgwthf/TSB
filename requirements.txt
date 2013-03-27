@@ -1,0 +1,9 @@
+Django==1.5
+South==0.7.6
+django-tables2==0.13.0
+huey==0.3.2
+matplotlib==1.2.0
+numpy==1.7.0
+psycopg2==2.4.6
+redis==2.7.2
+wsgiref==0.1.2

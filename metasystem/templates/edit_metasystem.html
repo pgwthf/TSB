@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load tabtags %}
+
+{% block title %}Edit MetaSystem {{metasystem.id}}{% endblock %}
+
+{% block js %}
+<script type="text/javascript">window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";</script>
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"> </script>
+<script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/forms.css"/>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/global.css"/>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
+
+{% if methodformset %}
+{% tabs_js 'Home' 'Method' methodformset.forms %}
+{% else %}
+{% tabs_js 'Home' %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block header %}
+{% if metasystem %}
+Edit MetaSystem {{metasystem.id}} "<a href="{% url show_metasystem metasystem_id=metasystem.id %}">{{metasystem.name}}</a>"
+{% if metasystem.group.name %}(group: <a href="{% url show_metasystems group_id=metasystem.group.id %}">{{ metasystem.group.name }}</a>){% endif %}
+{% else %}
+New Metasystem
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+{% start_tabs %}
+
+{% if errors %}
+<ul class="errorlist"><li>There are errors on this page!</li></ul>
+{% endif %}
+{% if duplicates %}
+<ul class="errorlist"><li>There are multiple Entries or Exits in the same method!</li></ul>
+{% endif %}
+
+
+{% if not methodformset %}
+This metasystem is read-only because it already has associated systems, so only
+the fields below can be edited.</a>.
+{% endif %}
+<form action="" method="POST">
+
+{{ metasystemform.media }}
+{% csrf_token %}
+<table>
+{{ metasystemform }}
+</table>
+
+<input type="submit" value="Save" />
+
+{{ methodformset.management_form }}
+
+{% for methodform in methodformset.forms %}
+
+{% next_tab %}
+
+
+<div class="formgroup">
+<div class="method">
+<h2>Method {{ forloop.counter }}: 
+{{ methodform.rank.value.name|default:"New Method" }}</h2>
+{{ methodform.rank.value.description }}
+<table>
+    {{ methodform }}
+</table>
+</div>
+    {% if methodform.nested_entries %}
+   		{% for entryformset in methodform.nested_entries %}
+	  		{{ entryformset.management_form }}
+<div class="entrygroup">
+      		{% for entryform in entryformset %}
+      			{% include "edit_entry.html" %}
+      		{% endfor %}
+</div>
+    	{% endfor %}
+   	{% endif %}
+    {% if methodform.nested_exits %}
+   		{% for exitformset in methodform.nested_exits %}
+	  		{{ exitformset.management_form }}
+<div class="exitgroup">
+   		   	{% for exitform in exitformset %}
+      			{% include "edit_exit.html" %}
+      		{% endfor %}
+</div>
+    	{% endfor %}
+   	{% endif %}
+</div>
+
+{% endfor %}
+</form>
+
+
+{% end_tabs %}
+
+
+{% endblock %}

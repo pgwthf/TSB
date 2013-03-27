@@ -1,0 +1,57 @@
+Metasystem name: <strong>{{metasystem.name}}</strong>
+<br />Description: {{ metasystem.comments }}
+<br />Date range: {{ metasystem.startdate }} to 
+{% if metasystem.enddate %}{{ metasystem.enddate }}{% else %}today{% endif %}.
+
+<br />This metasystem uses the stock pool: 
+<a href="{% url show_pool pool_id=metasystem.pool.id %}">{{ metasystem.pool.name }}</a>
+({{ metasystem.pool.description }})
+
+<br />Start equity: {{ metasystem.startcash }}
+
+<p class="ruleheader">Markettype: <strong>{{ metasystem.markettype.name }}</strong></p>
+<p class="rulebody">{{ metasystem.markettype.description }}</p>
+
+<p class="ruleheader">Allocation sizing: <strong>{{ metasystem.allocation.name }}</strong></p>
+<p class="rulebody">{{ metasystem.allocation.description }}</p>
+
+<p class="ruleheader">Equity model: <strong>{{ metasystem.equitymodel.name }}</strong></p>
+<p class="rulebody">{{ metasystem.equitymodel.description }}</p>
+
+{% for method in metasystem.methods %}
+<fieldset class="methodcontainer">
+<legend>
+<h3>Method {{ forloop.counter }}: {{ method.markettype_str }}</h3>
+</legend>
+<p class="methodbody">
+{% if method.comments %}<em>{{ method.comments }}</em><br />{% endif %}
+This is a {{ method.get_direction }} method for {{ method.markettype_str }} markets.
+<br />{{ method.rank.description }}
+</p>
+
+<div>
+
+<div class="leftcolumn rightline">
+	{% for entry in method.entries %}
+<p class="ruleheader">Entry {{ forloop.parentloop.counter }}.{{ forloop.counter }} -
+<strong>{{ entry.params.name }}</strong></p>
+<p class="rulebody">
+{% if entry.comments %}<em>{{ entry.comments }}</em><br />{% endif %}
+{{ entry.params.description }}</p>
+	{% endfor %}
+</div>
+
+<div class="rightcolumn">
+	{% for exit in method.exits %}
+<p class="ruleheader">Exit {{ forloop.parentloop.counter }}.{{ forloop.counter }} - 
+<strong>{{ exit.params.name }}</strong></p>
+<p class="rulebody">
+{% if exit.comments %}<em>{{ exit.comments }}</em><br />{% endif %}
+{{ exit.params.description }}</p>
+	{% endfor %}
+</div>
+
+</div>
+
+</fieldset>
+{% endfor %}

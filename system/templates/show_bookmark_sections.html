@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Bookmark Sections{% endblock %}
+
+{% block js %}
+{% endblock %}
+
+{% block header %}
+Bookmark Sections
+{% endblock %}
+
+{% block menu %}
+{% endblock %}
+
+{% block content %}
+
+{% for bookmark in bookmarks %}
+<p class="ruleheader"><a href="{% url show_bookmarked_systems bookmark_id=bookmark.id %}">{{ bookmark.section }}</a> ({{ bookmark.system_set.count }} systems)</p>
+{% if bookmark.comments %}<p class="rulebody">{{ bookmark.comments }}</p>{% endif %}
+{% endfor %}
+
+{% endblock %}

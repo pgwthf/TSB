@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load tabtags %}
+{% load render_table from django_tables2 %}
+
+{% block title %}System{{ system.id }}{% endblock %}
+
+{% block js %}
+{% include "admindatewidget_js.html" %}
+{% if system.metasystem.is_discretionary %}
+{% tabs_js 'Portfolio' 'Trades' 'Equity' 'Performance' 'Structure' %}
+{% else %}
+{% tabs_js 'Trades' 'Equity' 'Performance' 'Structure' %}
+{% endif %}
+{% endblock %}
+
+
+{% block header %}
+System {{ system.id }} (metasystem <a href="{% url show_metasystem metasystem_id=metasystem.id %}">{{ metasystem.id }}</a>, pool <a href="{% url show_system_pool system_id=system.id %}">{{ system.metasystem.pool.id }}</a>)
+{% if system.bookmark %}{{ system.bookmark }}{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+{% csrf_token %}
+
+
+{% start_tabs %}
+
+{% if system.metasystem.is_discretionary %}
+{% if stoploss_date %}Date for stoploss: {{ stoploss_date }}{% endif %}
+{% render_table portfolio_table %}
+{{ tradeform.media }}
+<br>{{ tradeform }}
+<br><input type="submit" name="action" value="Enter position" />
+<input type="submit" name="action" value="Exit position" />
+<input type="submit" name="action" value="Delete position" />
+
+
+{% next_tab %}
+{% endif %}
+
+
+{% render_table trades_table %}
+{% if system.metasystem.is_discretionary %}
+<input type="submit" name="action" value="Delete trade" />
+{% endif %}
+<br /><a href='{% url export_trades system_id=system.id %}'>Export trades to CSV</a>
+
+{% next_tab %}
+
+
+<img src='{% url show_equity_chart system_id=system.id %}' />
+	{% if equity_table %}{% render_table equity_table %}{% endif %}
+<br /><a href='/export/equity/day/{{ result_id }}.csv'>Export daily equity to CSV</a>
+<br /><a href='/export/equity/week/{{ result_id }}.csv'>Export weekly equity to CSV</a>
+<br /><a href='/export/equity/month/{{ result_id }}.csv'>Export monthly equity to CSV</a>
+<br /><a href='/export/equity/year/{{ result_id }}.csv'>Export annual equity to CSV</a>
+
+
+{% next_tab %}
+
+
+<h2>Performance statistics</h2>
+<table>
+	{% for line in performance %}
+<tr>
+		{% for cell in line %}
+		    {% if forloop.first %}
+<td style="padding-left: 2em; padding-right: 1em;">{{ cell }}:</td>
+            {% else %}
+<td>{{ cell }}</td>
+            {% endif %}
+		{% endfor %}</tr>
+	{% endfor %}</table>
+
+{% if result %}
+<h2>Results</h2>
+<table>
+	{% for line in result %}
+<tr>
+		{% for cell in line %}
+		    {% if forloop.first %}
+<td style="padding-left: 2em; padding-right: 1em;">{{ cell }}:</td>
+            {% else %}
+<td>{{ cell }}</td>
+            {% endif %}
+		{% endfor %}</tr>
+	{% endfor %}</table>
+{% endif %}
+
+
+{% next_tab %}
+
+
+{% include "metasystem_structure.html" %}
+
+<p>This system is based on metasystem <a href="{% url show_metasystem metasystem_id=metasystem.id %}">{{metasystem.name}}</a> with system parameters: {{ system.params }}
+<br />This system is {% if not system.active %}not{% endif %} active.
+
+<h2>Copy system</h2>
+Copy this system to a new method in another Metasystem. If this is a new 
+metasystem it must be created first. Click the reverse checkbox to turn a long
+system into a short one vice versa.
+<br>{{ copyform }}
+<input type="submit" name="copy" value="Copy system" />
+
+
+{% if system.bookmark %}
+<br>This system is bookmarked in <a href="
+{% url show_bookmarked_systems bookmark_id=system.bookmark.id %}"
+>{{ system.bookmark.section }}</a>
+{% endif %}
+
+<br>{{ bookmarkform }}
+<input type="submit" name="todo" value="Bookmark Selected" />
+
+
+{% end_tabs %}
+
+</form>
+
+{% endblock %}

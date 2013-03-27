@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Restore backup data{% endblock %}
+{% block content %}
+
+<h1>Backup and Restore</h1>
+
+<h2>Backup</h2>
+{% if message.backup %}
+{{ message.text }}<br>
+{% endif %}
+<a href="{% url make_backup %}">Create backup now</a>
+
+<h2>Restore</h2>
+{% if message.restore = 'confirmed' %}
+Are you sure you want to restore {{ message.filename }}?
+<a href="{% url restore! file_id=message.file_id %}">yes</a>
+<a href="{% url backup %}">no</a>
+{% elif message.restore %}
+{{ message.text }}
+{% else %}
+Select the backup file to restore:
+{% endif %}
+
+<ul>
+{% for file_id, filename in file_list.items %}
+<li><a href="{% url restore? file_id=file_id %}">{{ filename }}</a>
+{% endfor %}
+</ul>
+
+{% endblock %}

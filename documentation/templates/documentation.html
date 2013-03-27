@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Documentation{% endblock %}
+{% block content %}
+
+<h1>Documentation</h1>
+
+<h2>Contents</h2>
+
+<ul>
+<li><a href="{% url param_documentation par_type='entry' %}">Entries</a>
+<li><a href="{% url param_documentation par_type='exit' %}">Exits</a>
+<li><a href="{% url param_documentation par_type='alloc' %}">Allocation</a>
+<li><a href="{% url param_documentation par_type='rank' %}">Ranking</a>
+<li><a href="{% url param_documentation par_type='method' %}">Method selection</a>
+</ul>
+
+<h2>Terminology</h2>
+
+<h3>How methods work together</h3>
+A method is just a sub-system, so a metasystem can have several sub-systems. 
+These sub-systems or methods can work together in different ways:
+
+<h4>Entries</h4>
+<ul>
+
+parallel - multiple methods can be active simultaneously
+- priority order needs to be defined
+<li>Prioritised: Which methods are entered depends on the order of priority, 
+so first trades from the highest priority method are taken, then (if positions
+are still available) the second highest priority, and so on.</li>
+<li>Long - Short: is a version of this</li>
+
+serial - only single method is operational at any time
+- conditions need to be defined
+<li>by (market) conditions: a matrix of 2x2 (or 3x3) can be made using 2 sets
+of conditions, these conditions depend which method is active. Only 1 method 
+can be active at any one time.
+<li>freely programmable conditions?? just becomes a generic entry? NO because
+this works on pool level, not stock - but then they can happen in parallel...
+</ul>
+
+Allow multiple positions of same stock?
+PS	yes (limit = 0) limit per method??
+PS?	only in different methods (limit = 0)
+PS	no (limit = 1)
+
+Force exit?:
+PS	a new entry forces the same stock to exit from a different method 
+			and if it is in the same direction, it will just continue - but 
+			with different exits
+PS	a new entry forces the same stock to exit from a different method if L-S is
+			opposite
+PS	a new entry forces the same stock to exit from a different method if S-L is
+			opposite
+S	a new method forces any and all positions from other methods to exit
+			only for market cond.
+PS	exits are never forced
+	
+
+<object data="/static/data_diagram0_1.svg" type="image/svg+xml"></object>
+
+<object data="/static/trade_flowchart0_1.svg" type="image/svg+xml"></object>
+
+<table>
+<tr><td>Metasystem</td><td>
+A metasystem is a framework of one or more methods that each have one or more 
+entry and exit rules. 
+The metasystem definition itself, its methods and their entry and exit rules
+have may have one or more parameters that define how they operate, these 
+parameters can be fixed or variable. 
+When a metasystem is run, random values will be generated for each of the 
+variable parameters, so in theory at least one parameter must be variable, but
+in order to generate a varied number of systems more than 5 parameters should
+be variable.
+A metasystem has a markettype selector that may use a combination of indicators
+on the pool or pool index (or its own equity curve??) to select which market
+method is used.
+Running a metasystem results in the generation of systems with their 
+performance statistics (trades, equity).</td></tr>
+<tr><td>System</td><td>
+A system is a set of one or more methods that each have one or more entry and 
+exit rules. All parameters of the system definition itself, its methods and 
+their entry and exit rules are fixed.
+In practice, a system is based on a metasystem, with fixed values for the 
+metasystem's variable parameters.
+A system can be generated manually, by selecting a metasystem and setting its
+parameters, but (random) systems can be generated automatically by running the
+metasystem.
+In contrast to metasystems, systems can be run real-time to generate signals 
+for the next trading day, after the close of each trading day.</td></tr>
+<tr><td>Market</td><td>
+A market(method) is a collection of entry and exit rules, at least one of each. If a
+system has multiple methods, it must have a markettype defined. This
+markettype defines what market this marketmethod operates in.
+Each method may be be long or short.</td></tr>
+<tr><td>Entry or Exit Rule</td><td>
+A rule is a definition for generating an entry or exit signal. E.g. a fixed 
+stop loss at a percentage under the entry price is a rule. Each method may have
+ multiple entry and exit rules, but each rule may only be used once in each 
+ method.</td></tr>
+<tr><td>Signal</td><td>
+A signal is a potential entry or exit for the next trading day. Unconditional 
+signals will definitely be executed (e.g. 'at open'), conditional trades are 
+signals that may get executed, depending on price development the next day 
+(e.g. a stop loss at 5% under the entry price)
+</td></tr>
+<tr><td>Pool</td><td>
+Every system operates on a pool of stocks. Each pool has an associated index
+that may be used to select a method. Pools have a date range and any 
+(meta)system that uses the pool must have a date range that is inside that of
+the pool it uses.
+The stocks within the pool can also have a date range. By default their date
+range is the date range of the pool, but it is possible to limit a stock to
+a smaller date range than the pool it is in.
+Additionally each stock also has a start and endddate in its definition, these
+are only meant to be used to define the actual life span of the stock.
+</td></tr>
+<tr><td></td><td></td></tr>
+</table>
+
+<h2>Performance parameters</h2>
+<table>
+{% for line in docs %}
+	<tr>
+	{% for cell in line %}
+		<td>{{ cell }}</td>
+	{% endfor %}
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

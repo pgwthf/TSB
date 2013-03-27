@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Pool{% endblock %}
+
+{% block js %}
+{% include "admindatewidget_js.html" %}
+{% endblock %}
+
+{% block content %}
+
+<h1>Pool {{pool.id}}</h1>
+
+<form action="" method="post">
+{{ poolform.media }}
+{% csrf_token %}
+
+<table>
+{{ poolform }}
+</table>
+
+<h2>Pool entries:</h2>
+{{ memberformset.management_form }}
+{% for mf in memberformset %}
+	{% if mf.pool.value %}
+		{{ mf.DELETE }}
+		{{ mf.id }}
+		{{ mf.stock }} 
+		{{ mf.pool }} 
+		from {{ mf.startdate }}
+		to {{ mf.enddate }}
+		{% if mf.instance.stock.startdate or mf.instance.stock.enddate %}
+			{{ mf.instance.stock.name }} is valid
+			{% if mf.instance.stock.startdate %}
+				from {{ mf.instance.stock.startdate }}
+			{% endif %}
+			{% if mf.instance.stock.enddate %}
+				to {{ mf.instance.stock.enddate }}
+			{% endif %}
+		{% endif %}
+		<br />
+	{% endif %}
+{% endfor %}
+
+<input type="submit" name="save" value="Save pool changes"/>
+
+</form>
+
+{% endblock %}

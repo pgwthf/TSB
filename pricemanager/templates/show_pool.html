@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load tabtags %}
+
+{% block title %}Pool: {{ pool.name }}{% endblock %}
+
+{% block js %}
+{% if user.is_superuser %}
+    {% tabs_js 'Stock list' 'Properties' 'Manage' %}
+{% else %}
+    {% tabs_js 'Stock list' 'Properties' %}
+{% endif %}
+{% endblock %}
+
+{% block header %}
+View  pool: {{ pool.name }}
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block content %}
+
+{% start_tabs %}
+
+{% load render_table from django_tables2 %}
+{% render_table stocks_table %}
+
+{% next_tab %}
+
+<h2>Pool {{pool.id}}: {{pool.name}}</h2>
+{{ pool.description }}
+
+<p>
+Pool date range: {{ pool.startdate }} to {% if pool.enddate %}{{ pool.enddate }}{% else %}today{% endif %}.
+<br />Pool index: <a href="{% url show_stock stock_id=pool.index.id %}">
+{{ pool.index.description }} ({{ pool.index.name }})</a>
+(valid from {{ pool.index.startdate }} to {% if pool.enddate %}{{ pool.enddate }}{% else %}today{% endif %})
+<br /><a href="{% url edit_pool pool_id=pool.id %}">Edit this pool</a><br>
+<br />This pool is used by the following MetaSystems:<ul>
+{% for ms in pool.metasystem_set.all %}
+<br>li<a href="{% url show_metasystem metasystem_id=ms.id %}">{{ ms.id }}: {{ ms.name }}</a>/li
+{% endfor %}
+</ul>
+</p>
+
+
+{% if user.is_superuser %}
+    {% next_tab %}
+
+<form method="POST">
+    {% csrf_token %}
+The date range for all actions below is {{ daterangeform }}
+<table>
+<tr><td colspan=2><h2>Manage pool index</h2></td></tr>
+<tr><td><input type="submit" name="action" value="Download index">&nbsp;
+</td><td>
+Download the index of this pool in the above date range. This overwrites all 
+existing prices in the database and appends missing prices.
+</td></tr>
+<tr><td><input type="submit" name="action" value="Calculate index channels">&nbsp;
+</td><td>
+Calculate the channel data for the index of this pool in the above date range. 
+This overwrites all existing channel data in the database and appends missing 
+channel data.
+</td></tr>
+<tr><td colspan=2><h2>Manage stocks in this pool</h2></td></tr>
+<tr><td><input type="submit" name="action" value="Download all stock prices">&nbsp;
+</td><td>
+Download the prices of all stocks in this pool in the above date range. This 
+overwrites all existing prices in the database and appends missing prices.
+</td></tr>
+<tr><td><input type="submit" name="action" value="Check for missing prices">&nbsp;
+</td><td>
+Check for all stocks in this pool in the above date range if prices are missing.
+</td></tr>
+<tr><td><input type="submit" name="action" value="Check for stock splits">&nbsp;
+</td><td>
+Check for all stocks in this pool in the above date range if (reverse) splits
+may have occurred.
+</td></tr>
+<tr><td><input type="submit" name="action" value="Check for missing channels">&nbsp;
+</td><td>
+Check for all stocks in this pool in the above date range if channel data is
+missing.
+</td></tr>
+<tr><td><input type="submit" name="action" value="Calculate all stock channels">&nbsp;
+</td><td>
+Calculate channel data for all stocks in this pool in the above date range. 
+This overwrites all existing channel data in the database and appends missing 
+channel data.
+</td></tr>
+</table>
+</form>
+
+    {% if splits %}
+        {% load formtags %}
+<h3>Stock splits:</h3>
+<table>
+        {% for stock, split in splits %}
+<tr><td>{{ stock.name }}&nbsp;</td><td>
+            {% for date, ratio, close, open in split %}
+{{ date|date:"Y-m-d" }}: {{ ratio|invert_if_lt1 }} ({{ close }}->{{  open }}),
+            {% endfor %}
+</td></tr>
+        {% endfor %}
+</table>
+    {% endif %}
+
+    {% if missing_prices %}
+<h3>Missing Prices:</h3>
+<table>
+        {% for stock, dates in missing_prices %}
+<tr><td>{{ stock.name }}&nbsp;</td><td>
+            {% for date in dates %}
+{{ date|date:"Y-m-d" }},
+            {% endfor %}
+</td></tr>
+        {% endfor %}
+</table>
+    {% endif %}
+
+    {% if missing_channels %}
+<h3>Missing Channels:</h3>
+<table>
+        {% for stock, dates in missing_channels %}
+<tr><td>{{ stock.name }}&nbsp;</td><td>
+            {% for date in dates %}
+{{ date|date:"Y-m-d" }},
+            {% endfor %}
+</td></tr>
+        {% endfor %}
+</table>
+    {% endif %}
+
+{% endif %}
+
+{% end_tabs %}
+
+{% endblock %}
+

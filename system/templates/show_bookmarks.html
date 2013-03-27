@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load tabtags %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Bookmarked Systems for {{ bookmark.section }}{% endblock %}
+
+{% block js %}
+{% tabs_js 'Systems' 'View' %}
+{% endblock %}
+
+{% block header %}
+Bookmarked Systems for {{ bookmark.section }}
+{% endblock %}
+
+{% block menu %}
+{% endblock %}
+
+{% block content %}
+
+{% start_tabs %}
+
+<form action="" method="POST">
+{% csrf_token %}
+{% render_table systems_table %}
+<script type="text/javascript" src="/static/fxheader1.js"></script>
+<script type="text/javascript">fxheaderInit('systable',600);</script>
+
+
+{% next_tab %}
+<input type="submit" name="todo" value="Drop bookmark" />
+
+<fieldset class="methodcontainer">
+<legend>Filters</legend>
+{{ filterformset.management_form }}
+{% for form in filterformset.forms %}
+<p>{{ form }}</p>
+{% endfor %}
+<div style="margin-top:1em">
+<input style="float:left;" type="submit" name="add" value="Add filter" />
+<input style="float:right;" type="submit" name="apply filters" value="Apply filters" />
+</div>
+</fieldset>
+</form>
+
+{% end_tabs %}
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load tabtags %}
+
+{% block title %}Edit trades for System{{ system.id }}{% endblock %}
+
+{% block js %}
+{% include "admindatewidget_js.html" %}
+{% tabs_js 'Portfolio' 'Trades' 'Performance' 'Equity' '(Meta)System' %}
+{% endblock %}
+
+{% block header %}
+<img style="vertical-align: middle;" src="{% url show_thumbnail system.id %}" /> Edit System {{ system.id }}
+{% endblock %}
+
+{% block content %}
+
+{% start_tabs %}
+
+<form action="" method="POST">
+{{ tradeform.media }}
+{% csrf_token %}
+
+{% if stoploss_date %}Date for stoploss: {{ stoploss_date }}{% endif %}
+{% load render_table from django_tables2 %}
+{% render_table portfolio_table %}
+<br>{{ tradeform }}
+<input type="submit" name="todo" value="Enter position" />
+<input type="submit" name="todo" value="Exit position" />
+
+{% next_tab %}
+
+{% render_table trades_table %}
+<input type="submit" name="todo" value="Delete trade" />
+
+{% next_tab %}
+
+<table>{% for line in performance %}
+<tr>{% for cell in line %}
+<td>{{ cell }}</td>
+{% endfor %}</tr>
+{% endfor %}</table>
+{% if result %}
+<h2>Results</h2>
+<table>
+	{% for line in result %}<tr>
+		{% for cell in line %}<td>{{ cell }}</td>{% endfor %}</tr>
+	{% endfor %}</table>
+{% endif %}
+
+{% next_tab %}
+
+{% if equity_table %}
+<img src='{% url show_equity_chart system_id=system.id %}' />
+{% render_table equity_table %}
+{% endif %}
+
+{% next_tab %}
+
+System parameters: {{ system.params }}
+
+<br />Date range: {{ metasystem.startdate }} to {% if system.enddate %}{{ system.enddate }}{% else %}today{% endif %}.
+<br />This system is {% if not system.active %}not{% endif %} active.
+<br />This system uses the stock pool: {{ metasystem.pool.name }}
+
+</form>
+
+{% end_tabs %}
+
+{% if message %}
+<div class="statusbar">{{ message }}</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+<title>{% block title %}{% endblock %}</title>
+{% block js %}{% endblock %}
+<link rel="stylesheet" type="text/css" href="/static/django_tables2.css" />
+</head>
+<body>
+
+<div class="login"><ul id="nav"><li>
+	<a href="{% url admin:logout %}">log out {{ user.username }}</a>
+</li></ul></div>
+
+<div class="menu">
+<ul id="nav">
+	<li><a href="{% url show_metasystems %}">Home</a></li>
+	<li><a href="{% url show_bookmark_sections %}">Bookmarks</a></li>
+	<li><a href="#">Manage</a><ul>
+		<li><a href="{% url show_metasystems %}">Manage MetaSystems</a></li>
+		<li><a href="{% url show_pools %}">Manage Stock Pools</a></li>
+		<li><a href="{% url show_market_type %}">Market Condition</a></li>
+	</ul></li>
+	<li><a href="#">Admin</a><ul>
+{% if user.is_superuser %}
+		<li><a href="{% url admin:index %}">Django admin</a></li>
+		<li><a href="{% url backup %}">Backup & Restore</a></li>
+{% endif %}
+		<li><a href="{% url admin:app_list 'bugtracker' %}">Issue tracker</a></li>
+		<li><a href="{% url admin:app_list 'pricemanager' %}">Manage stocks</a></li>
+		<li><a href="{% url admin:app_list 'system' %}">Manage Bookmarks</a></li>
+		<li><a href="{% url admin:app_list 'metasystem' %}">Manage MetaSystem Groups</a></li>
+	</ul></li>
+	<li><a href="#">Help</a><ul>
+		<li><a href="{% url show_documentation %}">Show documentation</a></li>
+	</ul></li>
+{% block menu %}{% endblock %}
+</ul>
+</div><!-- menu -->
+
+<div class="header">
+{% block header %}{% endblock %}
+</div>
+
+{% block content %}{% endblock %}
+
+{% if notify %}
+<div class="statusbar">{{ notify.render }}</div>
+{% endif %}
+
+</body>
+</html>

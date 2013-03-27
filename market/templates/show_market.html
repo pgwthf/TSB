@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load tabtags %}
+
+{% block title %}Market conditions{% endblock %}
+
+{% block js %}
+{% tabs_js 'Chart' 'Settings' %}
+{% endblock %}
+
+{% block header %}
+Market Conditions (currently {{ current_condition }})
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block content %}
+
+{% start_tabs %}
+
+<form action="" method="POST">
+{% csrf_token %}
+<img src='{% url show_market_chart symbol=symbol startdate_str=dateform.startdate.value|date:"Ymd" enddate_str=dateform.enddate.value|date:"Ymd" %}' />
+<br>{{ dateform.as_table }}
+<input type="submit" name="todo" value="Change dates" />
+
+{% next_tab %}
+
+<fieldset class="methodcontainer">
+<legend>Settings</legend>
+<table>
+{% for field in settingsform %}
+<tr><td>{{ field.label_tag }}:</td><td>{{ field.errors }}{{ field }}</td></tr>
+{% endfor %}
+</table>
+<div style="margin-top:1em">
+<input style="float:right;" type="submit" name="todo" value="Save settings" />
+</div>
+</fieldset>
+
+</form>
+
+{% end_tabs %}
+
+{% if message %}
+<div class="statusbar">{{ message }}</div>
+{% endif %}
+
+{% endblock %}

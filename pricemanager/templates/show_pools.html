@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load tabtags %}
+
+{% block title %}Manage Pools{% endblock %}
+
+{% block js %}
+{% if user.is_superuser %}
+    {% tabs_js 'Pool list' 'Manage' %}
+{% else %}
+    {% tabs_js 'Stock list' %}
+{% endif %}
+{% endblock %}
+
+{% block header %}
+Manage Pools
+{% endblock %}
+
+{% block menu %}
+<li><a href="#">Pools</a><ul>
+    <li><a href="{% url new_pool %}">New Pool</a></li>
+</ul></li>
+{% endblock %}
+
+{% block content %}
+
+{% start_tabs %}
+
+<form method="POST">
+{% csrf_token %}
+{% load render_table from django_tables2 %}
+{% render_table pools_table %}
+<br><input type="submit" name="action" value="Copy">
+<input type="submit" name="action" value="Delete">
+</form>
+
+
+{% if user.is_superuser %}
+{% next_tab %}
+
+TODO:
+
+Download all Pools
+Check all Pools
+{% if messages %}
+    <ul>
+    {% for msg in messages %}
+        <li>{{ msg }}
+    {% endfor %}
+    </ul>
+{% endif %}
+<br />
+
+{% endif %}
+
+{% end_tabs %}
+
+{% endblock %}
