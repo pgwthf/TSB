@@ -12,7 +12,7 @@
 consider moving this  ? to groups ?
 {% block menu %}
 <li><a href="#">Metasystems</a><ul>
-	<li><a href="{% url "new_metasystem" %}">New MetaSystem</a></li>
+	<li><a href="{% url 'new_metasystem' %}">New MetaSystem</a></li>
 </ul></li>
 {% endblock %}
 
@@ -30,9 +30,9 @@ consider moving this  ? to groups ?
 
 {% next_tab %}
 
-<p class="ruleheader"><a href="{% url "show_metasystems" %}">Show all MetaSystems</a></p>
+<p class="ruleheader"><a href="{% url 'show_metasystems' %}">Show all MetaSystems</a></p>
 {% for group in groups %}
-<p class="ruleheader"><a href="{% url "show_metasystems" group_id=group.id %}">{{ group.name }}</a> ({{ group.metasystem_set.count }} metasystems)</p>
+<p class="ruleheader"><a href="{% url 'show_metasystems' group_id=group.id %}">{{ group.name }}</a> ({{ group.metasystem_set.count }} metasystems)</p>
 {% if group.comments %}<p class="rulebody">{{ group.comments }}</p>{% endif %}
 {% endfor %}
 

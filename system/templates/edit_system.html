@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block header %}
-<img style="vertical-align: middle;" src="{% url "show_thumbnail" system.id %}" /> Edit System {{ system.id }}
+<img style="vertical-align: middle;" src="{% url 'show_thumbnail' system.id %}" /> Edit System {{ system.id }}
 {% endblock %}
 
 {% block content %}
@@ -50,7 +50,7 @@
 {% next_tab %}
 
 {% if equity_table %}
-<img src='{% url "show_equity_chart" system_id=system.id %}' />
+<img src='{% url 'show_equity_chart' system_id=system.id %}' />
 {% render_table equity_table %}
 {% endif %}
 

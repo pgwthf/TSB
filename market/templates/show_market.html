@@ -19,7 +19,7 @@ Market Conditions (currently {{ current_condition }})
 
 <form action="" method="POST">
 {% csrf_token %}
-<img src='{% url "show_market_chart" symbol=symbol startdate_str=dateform.startdate.value|date:"Ymd" enddate_str=dateform.enddate.value|date:"Ymd" %}' />
+<img src="{% url 'show_market_chart' symbol=symbol startdate_str=dateform.startdate.value|date:'Ymd' enddate_str=dateform.enddate.value|date:'Ymd' %}" />
 <br>{{ dateform.as_table }}
 <input type="submit" name="todo" value="Change dates" />
 

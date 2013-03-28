@@ -12,7 +12,7 @@
 {% if prev_trade %}
 <a href="{{ prev_trade }}" title="{{ prev_trade }}">previous trade</a>
 {% else %}previous trade{% endif %}</div>
-View trade of <a href="{% url "show_system" system_id=trade.system.id %}">System {{ trade.system.id }}</a>
+View trade of <a href="{% url 'show_system' system_id=trade.system.id %}">System {{ trade.system.id }}</a>
 <div style="float:right;font-size: 80%;" >
 {% if next_trade %}
 <a href="{{ next_trade }}" title="{{ next_trade }}">next trade</a>

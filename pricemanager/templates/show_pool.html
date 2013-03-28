@@ -31,13 +31,13 @@ View  pool: {{ pool.name }}
 
 <p>
 Pool date range: {{ pool.startdate }} to {% if pool.enddate %}{{ pool.enddate }}{% else %}today{% endif %}.
-<br />Pool index: <a href="{% url "show_stock" stock_id=pool.index.id %}">
+<br />Pool index: <a href="{% url 'show_stock' stock_id=pool.index.id %}">
 {{ pool.index.description }} ({{ pool.index.name }})</a>
 (valid from {{ pool.index.startdate }} to {% if pool.enddate %}{{ pool.enddate }}{% else %}today{% endif %})
-<br /><a href="{% url "edit_pool" pool_id=pool.id %}">Edit this pool</a><br>
+<br /><a href="{% url 'edit_pool' pool_id=pool.id %}">Edit this pool</a><br>
 <br />This pool is used by the following MetaSystems:<ul>
 {% for ms in pool.metasystem_set.all %}
-<br>li<a href="{% url "show_metasystem" metasystem_id=ms.id %}">{{ ms.id }}: {{ ms.name }}</a>/li
+<br>li<a href="{% url 'show_metasystem' metasystem_id=ms.id %}">{{ ms.id }}: {{ ms.name }}</a>/li
 {% endfor %}
 </ul>
 </p>

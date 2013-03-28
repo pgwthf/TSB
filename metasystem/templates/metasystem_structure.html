@@ -4,7 +4,7 @@ Metasystem name: <strong>{{metasystem.name}}</strong>
 {% if metasystem.enddate %}{{ metasystem.enddate }}{% else %}today{% endif %}.
 
 <br />This metasystem uses the stock pool: 
-<a href="{% url show_pool pool_id=metasystem.pool.id %}">{{ metasystem.pool.name }}</a>
+<a href="{% url 'show_pool' pool_id=metasystem.pool.id %}">{{ metasystem.pool.name }}</a>
 ({{ metasystem.pool.description }})
 
 <br />Start equity: {{ metasystem.startcash }}
