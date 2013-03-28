@@ -12,8 +12,9 @@ from __future__ import absolute_import
 from django.forms import ModelForm, Form
 from django import forms
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper, \
-                                                                AdminDateWidget
+        AdminDateWidget
 from django.forms.models import modelformset_factory
+from django.db.models.fields.related import ManyToOneRel
 
 from pricemanager.models import Pool, Stock, StockPoolDates
 
@@ -26,9 +27,12 @@ class PoolForm(ModelForm):
         self.fields['startdate'].widget = AdminDateWidget()
         self.fields['enddate'].widget = AdminDateWidget()
         self.fields['description'].widget = forms.Textarea(
-                                                attrs={'cols': 40, 'rows': 2})
+                attrs={'cols': 40, 'rows': 2})
         self.fields['index'] = forms.ModelChoiceField(
-                        queryset=Stock.objects.filter(name__startswith='^'))
+                queryset=Stock.objects.filter(name__startswith='^'))
+        rel = Pool._meta.get_field('index').rel #@UndefinedVariable
+        self.fields['index'].widget = RelatedFieldWidgetWrapper(
+                self.fields['index'].widget, rel, self.admin_site) 
 
     class Meta:
         model = Pool

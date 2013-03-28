@@ -174,10 +174,7 @@ def edit_pool(request, pool_id=None):
     '''
     Show contents of pool <pool_id>.
     '''
-    if pool_id == 'new':
-        pool = None
-    else:
-        pool = Pool.objects.get(id=pool_id)
+    pool = None if pool_id == 'new' else Pool.objects.get(id=pool_id)
 
     if request.method == 'POST':
         poolform = PoolForm(request.POST, instance=pool)
@@ -190,10 +187,14 @@ def edit_pool(request, pool_id=None):
     else: # first entry - no POST data
         poolform = PoolForm(instance=pool)
         memberqueryset = StockPoolDates.objects.filter(pool=pool)
-        memberformset = MemberFormset(queryset=memberqueryset, 
-                                                    initial=[{'pool': pool}])
-    return render(request, 'edit_pool.html', {'poolform': poolform,
-                                              'memberformset': memberformset})
+        memberformset = MemberFormset(queryset=memberqueryset,
+                initial=[{'pool': pool}])
+
+    return render(request, 'edit_pool.html', {
+            'pool': pool,
+            'poolform': poolform,
+            'memberformset': memberformset,
+            })
 
 
 def show_stock(request, stock_id=None, symbol=None):

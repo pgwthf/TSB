@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}Edit Pool{% endblock %}
 
 {% block js %}
-{% include "admindatewidget_js.html" %}
+{% include 'admindatewidget_js.html' %}
 {% endblock %}
 
 {% block content %}
@@ -17,6 +17,7 @@
 <table>
 {{ poolform }}
 </table>
+{{ poolform.index }}
 
 <h2>Pool entries:</h2>
 {{ memberformset.management_form }}

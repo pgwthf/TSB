@@ -10,6 +10,9 @@ BUGS:
 	list / all case into account for CHOICES
 
 
+* merge edit_pool with show_pool
+	- adding/deleting(/editing?) enties like in portfolio
+
 DISCRETIONARY:
 * see pool with indicators and click to see stock
 * see mkt cond

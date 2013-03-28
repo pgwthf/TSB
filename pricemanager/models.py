@@ -54,8 +54,8 @@ class Stock(models.Model):
     description = models.CharField(max_length=50, blank=True)
     startdate = models.DateField(null=True, blank=True)
     enddate = models.DateField(null=True, blank=True)
-    currency = models.CharField(max_length=3, choices=CURRENCIES, 
-                                                            default=US_DOLLAR)
+    currency = models.CharField(max_length=3, choices=CURRENCIES,
+            default=US_DOLLAR)
 
 
     @property
@@ -350,7 +350,7 @@ class Stock(models.Model):
 
 
     def __unicode__(self):
-        return '{} - {}'.format(self.name, self.description)
+        return u'{} - {}'.format(self.name, self.description)
 
 
 
