@@ -15,7 +15,7 @@
 
 
 {% block header %}
-System {{ system.id }} (metasystem <a href="{% url show_metasystem metasystem_id=metasystem.id %}">{{ metasystem.id }}</a>, pool <a href="{% url show_system_pool system_id=system.id %}">{{ system.metasystem.pool.id }}</a>)
+System {{ system.id }} (metasystem <a href="{% url "show_metasystem" metasystem_id=metasystem.id %}">{{ metasystem.id }}</a>, pool <a href="{% url "show_system_pool" system_id=system.id %}">{{ system.metasystem.pool.id }}</a>)
 {% if system.bookmark %}{{ system.bookmark }}{% endif %}
 {% endblock %}
 
@@ -45,12 +45,12 @@ System {{ system.id }} (metasystem <a href="{% url show_metasystem metasystem_id
 {% if system.metasystem.is_discretionary %}
 <input type="submit" name="action" value="Delete trade" />
 {% endif %}
-<br /><a href='{% url export_trades system_id=system.id %}'>Export trades to CSV</a>
+<br /><a href='{% url "export_trades" system_id=system.id %}'>Export trades to CSV</a>
 
 {% next_tab %}
 
 
-<img src='{% url show_equity_chart system_id=system.id %}' />
+<img src='{% url "show_equity_chart" system_id=system.id %}' />
 	{% if equity_table %}{% render_table equity_table %}{% endif %}
 <br /><a href='/export/equity/day/{{ result_id }}.csv'>Export daily equity to CSV</a>
 <br /><a href='/export/equity/week/{{ result_id }}.csv'>Export weekly equity to CSV</a>
@@ -95,7 +95,7 @@ System {{ system.id }} (metasystem <a href="{% url show_metasystem metasystem_id
 
 {% include "metasystem_structure.html" %}
 
-<p>This system is based on metasystem <a href="{% url show_metasystem metasystem_id=metasystem.id %}">{{metasystem.name}}</a> with system parameters: {{ system.params }}
+<p>This system is based on metasystem <a href="{% url "show_metasystem" metasystem_id=metasystem.id %}">{{metasystem.name}}</a> with system parameters: {{ system.params }}
 <br />This system is {% if not system.active %}not{% endif %} active.
 
 <h2>Copy system</h2>
@@ -108,7 +108,7 @@ system into a short one vice versa.
 
 {% if system.bookmark %}
 <br>This system is bookmarked in <a href="
-{% url show_bookmarked_systems bookmark_id=system.bookmark.id %}"
+{% url "show_bookmarked_systems" bookmark_id=system.bookmark.id %}"
 >{{ system.bookmark.section }}</a>
 {% endif %}
 

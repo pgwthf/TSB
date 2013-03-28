@@ -8,13 +8,13 @@
 {% if message.backup %}
 {{ message.text }}<br>
 {% endif %}
-<a href="{% url make_backup %}">Create backup now</a>
+<a href="{% url "make_backup" %}">Create backup now</a>
 
 <h2>Restore</h2>
 {% if message.restore = 'confirmed' %}
 Are you sure you want to restore {{ message.filename }}?
-<a href="{% url restore! file_id=message.file_id %}">yes</a>
-<a href="{% url backup %}">no</a>
+<a href="{% url "restore!" file_id=message.file_id %}">yes</a>
+<a href="{% url "backup" %}">no</a>
 {% elif message.restore %}
 {{ message.text }}
 {% else %}
@@ -23,7 +23,7 @@ Select the backup file to restore:
 
 <ul>
 {% for file_id, filename in file_list.items %}
-<li><a href="{% url restore? file_id=file_id %}">{{ filename }}</a>
+<li><a href="{% url "restore?" file_id=file_id %}">{{ filename }}</a>
 {% endfor %}
 </ul>
 

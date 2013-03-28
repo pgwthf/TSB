@@ -26,8 +26,8 @@
 
 {% block header %}
 {% if metasystem %}
-Edit MetaSystem {{metasystem.id}} "<a href="{% url show_metasystem metasystem_id=metasystem.id %}">{{metasystem.name}}</a>"
-{% if metasystem.group.name %}(group: <a href="{% url show_metasystems group_id=metasystem.group.id %}">{{ metasystem.group.name }}</a>){% endif %}
+Edit MetaSystem {{metasystem.id}} "<a href="{% url "show_metasystem" metasystem_id=metasystem.id %}">{{metasystem.name}}</a>"
+{% if metasystem.group.name %}(group: <a href="{% url "show_metasystems" group_id=metasystem.group.id %}">{{ metasystem.group.name }}</a>){% endif %}
 {% else %}
 New Metasystem
 {% endif %}

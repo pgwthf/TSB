@@ -1,5 +1,5 @@
 Django==1.5
-South==0.7.6
+PIL==1.1.7
 django-tables2==0.13.0
 huey==0.3.2
 matplotlib==1.2.0

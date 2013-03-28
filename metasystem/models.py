@@ -30,6 +30,9 @@ from TSB.utils import get_choice
 from metasystem.parameters import fields
 from metasystem.parameters.params_market import _Market
 
+# South is a major PITA...
+# from south.modelsinspector import add_introspection_rules
+# add_introspection_rules([], ['metasystem.parameters.fields.ParamField'])
 
 # this model is for testing only
 class ParamModel(models.Model):

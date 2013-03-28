@@ -8,30 +8,30 @@
 <body>
 
 <div class="login"><ul id="nav"><li>
-	<a href="{% url admin:logout %}">log out {{ user.username }}</a>
+	<a href="{% url "admin:logout" %}">log out {{ user.username }}</a>
 </li></ul></div>
 
 <div class="menu">
 <ul id="nav">
-	<li><a href="{% url show_metasystems %}">Home</a></li>
-	<li><a href="{% url show_bookmark_sections %}">Bookmarks</a></li>
+	<li><a href="{% url "show_metasystems" %}">Home</a></li>
+	<li><a href="{% url "show_bookmark_sections" %}">Bookmarks</a></li>
 	<li><a href="#">Manage</a><ul>
-		<li><a href="{% url show_metasystems %}">Manage MetaSystems</a></li>
-		<li><a href="{% url show_pools %}">Manage Stock Pools</a></li>
-		<li><a href="{% url show_market_type %}">Market Condition</a></li>
+		<li><a href="{% url "show_metasystems" %}">Manage MetaSystems</a></li>
+		<li><a href="{% url "show_pools" %}">Manage Stock Pools</a></li>
+		<li><a href="{% url "show_market_type" %}">Market Condition</a></li>
 	</ul></li>
 	<li><a href="#">Admin</a><ul>
 {% if user.is_superuser %}
-		<li><a href="{% url admin:index %}">Django admin</a></li>
-		<li><a href="{% url backup %}">Backup & Restore</a></li>
+		<li><a href="{% url "admin:index" %}">Django admin</a></li>
+		<li><a href="{% url "backup" %}">Backup & Restore</a></li>
 {% endif %}
-		<li><a href="{% url admin:app_list 'bugtracker' %}">Issue tracker</a></li>
-		<li><a href="{% url admin:app_list 'pricemanager' %}">Manage stocks</a></li>
-		<li><a href="{% url admin:app_list 'system' %}">Manage Bookmarks</a></li>
-		<li><a href="{% url admin:app_list 'metasystem' %}">Manage MetaSystem Groups</a></li>
+		<li><a href="{% url "admin:app_list" 'bugtracker' %}">Issue tracker</a></li>
+		<li><a href="{% url "admin:app_list" 'pricemanager' %}">Manage stocks</a></li>
+		<li><a href="{% url "admin:app_list" 'system' %}">Manage Bookmarks</a></li>
+		<li><a href="{% url "admin:app_list" 'metasystem' %}">Manage MetaSystem Groups</a></li>
 	</ul></li>
 	<li><a href="#">Help</a><ul>
-		<li><a href="{% url show_documentation %}">Show documentation</a></li>
+		<li><a href="{% url "show_documentation" %}">Show documentation</a></li>
 	</ul></li>
 {% block menu %}{% endblock %}
 </ul>
