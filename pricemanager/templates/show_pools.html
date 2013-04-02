@@ -39,6 +39,12 @@ Manage Pools
 
 TODO:
 
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="file" name="poolfile" />
+    <input type="submit" name="upload" value="Upload Pool File" />
+</form>
+
 Download all Pools
 Check all Pools
 {% if messages %}

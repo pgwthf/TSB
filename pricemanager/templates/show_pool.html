@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load tabtags %}
 
 {% block title %}Pool: {{ pool.name }}{% endblock %}
 
 {% block js %}
-{% if user.is_superuser %}
+{% if user.is_superuser and pool.members.all %}
     {% tabs_js 'Stock list' 'Properties' 'Manage' %}
 {% else %}
     {% tabs_js 'Stock list' 'Properties' %}
@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block header %}
-View  pool: {{ pool.name }}
+View <a href="{% url 'show_pools' %}">pool</a>: {{ pool.name }}
 {% endblock %}
 
 {% block menu %}{% endblock %}
@@ -21,33 +21,43 @@ View  pool: {{ pool.name }}
 
 {% start_tabs %}
 
+<form method="POST">
+    {% csrf_token %}
+
 {% load render_table from django_tables2 %}
 {% render_table stocks_table %}
+<br><input type="submit" name="action" value="Delete">
 
 {% next_tab %}
 
 <h2>Pool {{pool.id}}: {{pool.name}}</h2>
-{{ pool.description }}
 
-<p>
-Pool date range: {{ pool.startdate }} to {% if pool.enddate %}{{ pool.enddate }}{% else %}today{% endif %}.
-<br />Pool index: <a href="{% url 'show_stock' stock_id=pool.index.id %}">
-{{ pool.index.description }} ({{ pool.index.name }})</a>
-(valid from {{ pool.index.startdate }} to {% if pool.enddate %}{{ pool.enddate }}{% else %}today{% endif %})
-<br /><a href="{% url 'edit_pool' pool_id=pool.id %}">Edit this pool</a><br>
-<br />This pool is used by the following MetaSystems:<ul>
-{% for ms in pool.metasystem_set.all %}
+<table>
+{{ poolform }}
+</table>
+<input type="submit" name="save" value="Save pool changes"/>
+<hr>
+<table>
+{{ memberform }}
+</table>
+<input type="submit" name="save" value="Add stock to pool"/>
+<hr>
+
+<br />
+{% if pool.metasystem_set.all %}
+This pool is used by the following MetaSystems:<ul>
+    {% for ms in pool.metasystem_set.all %}
 <br>li<a href="{% url 'show_metasystem' metasystem_id=ms.id %}">{{ ms.id }}: {{ ms.name }}</a>/li
-{% endfor %}
+    {% endfor %}
 </ul>
-</p>
+{% else %}
+This pool is not used by any MetaSystems
+{% endif %}
 
 
-{% if user.is_superuser %}
+{% if user.is_superuser and pool.members.all %}
     {% next_tab %}
 
-<form method="POST">
-    {% csrf_token %}
 The date range for all actions below is {{ daterangeform }}
 <table>
 <tr><td colspan=2><h2>Manage pool index</h2></td></tr>
@@ -89,7 +99,6 @@ This overwrites all existing channel data in the database and appends missing
 channel data.
 </td></tr>
 </table>
-</form>
 
     {% if splits %}
         {% load formtags %}
@@ -98,7 +107,7 @@ channel data.
         {% for stock, split in splits %}
 <tr><td>{{ stock.name }}&nbsp;</td><td>
             {% for date, ratio, close, open in split %}
-{{ date|date:"Y-m-d" }}: {{ ratio|invert_if_lt1 }} ({{ close }}->{{  open }}),
+{{ date|date:'Y-m-d' }}: {{ ratio|invert_if_lt1 }} ({{ close }}->{{  open }}),
             {% endfor %}
 </td></tr>
         {% endfor %}
@@ -111,7 +120,7 @@ channel data.
         {% for stock, dates in missing_prices %}
 <tr><td>{{ stock.name }}&nbsp;</td><td>
             {% for date in dates %}
-{{ date|date:"Y-m-d" }},
+{{ date|date:'Y-m-d' }},
             {% endfor %}
 </td></tr>
         {% endfor %}
@@ -124,7 +133,7 @@ channel data.
         {% for stock, dates in missing_channels %}
 <tr><td>{{ stock.name }}&nbsp;</td><td>
             {% for date in dates %}
-{{ date|date:"Y-m-d" }},
+{{ date|date:'Y-m-d' }},
             {% endfor %}
 </td></tr>
         {% endfor %}
@@ -132,6 +141,7 @@ channel data.
     {% endif %}
 
 {% endif %}
+</form>
 
 {% end_tabs %}
 

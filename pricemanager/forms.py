@@ -13,8 +13,6 @@ from django.forms import ModelForm, Form
 from django import forms
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper, \
         AdminDateWidget
-from django.forms.models import modelformset_factory
-from django.db.models.fields.related import ManyToOneRel
 
 from pricemanager.models import Pool, Stock, StockPoolDates
 
@@ -36,7 +34,7 @@ class PoolForm(ModelForm):
 
     class Meta:
         model = Pool
-        exclude = ('members')
+        exclude = ('members',)
 
 
 class MemberForm(ModelForm):
@@ -51,10 +49,9 @@ class MemberForm(ModelForm):
 
     class Meta:
         model = StockPoolDates
+        exclude = ('pool')
 
 
-MemberFormset = modelformset_factory(StockPoolDates, form=MemberForm, 
-                                                        can_delete=True)
 
 class StockChartForm(Form):
     startdate = forms.DateField(required=False)
@@ -63,10 +60,10 @@ class StockChartForm(Form):
 
 
 class DateRangeForm(Form):
-    startdate = forms.DateField(label='from')
-    enddate = forms.DateField(label='to')
-    
+    fromdate = forms.DateField(label='from')
+    todate = forms.DateField(label='to')
+
     def __init__(self, *args, **kwargs):
         super(DateRangeForm, self).__init__(*args, **kwargs)
-        self.fields['startdate'].widget.attrs['size'] = 10
-        self.fields['enddate'].widget.attrs['size'] = 10
+        self.fields['fromdate'].widget.attrs['size'] = 10
+        self.fields['todate'].widget.attrs['size'] = 10

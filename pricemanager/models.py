@@ -17,11 +17,11 @@ from django.db import models
 from django.db import transaction
 from django.db.models import Max, Min
 
-
 from pricemanager.yahoo import download_today, download_history
 
 from TSB.utils import notify_admin
-from utils_python.utils import previous_weekday, last_year, random_string
+from utils_python.utils import previous_weekday, last_year, random_string, \
+        datestr2date
 
 from pricemanager.indicators.multi import StockPrices
 from pricemanager.indicators.single import StockPrice
@@ -193,39 +193,7 @@ class Stock(models.Model):
                             self.startdate is None or date >= self.startdate)
 
 
-#    def has_prices(self, startdate, enddate):
-#        '''
-#        Checks if all prices for stock exist between <startdate> and <enddate>.
-#        If no enddate is defined, it is set to today.
-#        '''
-#        if not enddate:
-#            enddate = datetime.date.today()
-#        if self.startdate and self.startdate > startdate:
-#            startdate = self.startdate
-#        if self.enddate and self.enddate < enddate:
-#            enddate = self.enddate
-#
-#        missing_dates = self.missing_prices(startdate, enddate)
-#        if missing_dates:
-#            return 'No prices found for {} on the following dates: '.format(
-#                    self.name, ', '.join(missing_dates))
-#        return []
-#
-#        num_prices = Price.objects.filter(stock=self, date__gte=startdate, 
-#                                                    date__lte=enddate).count()
-#        n_days = (enddate - startdate).days
-#        short_term_threshold = 5 * ((n_days + 1) // 7)
-#        long_term_threshold = (250 * n_days) // 365
-#        threshold = min(short_term_threshold, long_term_threshold)
-#        warning = None
-#        if num_prices < threshold:
-#            warning = 'Only {} prices found for {} from {} to {} (target={})'.\
-#                    format(num_prices, self.name, startdate, enddate, 
-#                           threshold)
-#        return warning
-
-
-    def missing_prices(self, index=None, startdate=None, enddate=None):
+    def missing_prices(self, pool=None, startdate=None, enddate=None):
         '''
         Returns a list with dates for which no prices were found in <stock>, but
         the index associated with the stocks currency does have a price.
@@ -236,9 +204,19 @@ class Stock(models.Model):
             enddate = self.enddate
         if not startdate:
             startdate = self.get_earliest_date()
+            if not startdate: # no prices were found
+                startdate = last_year(enddate)
+                if self.startdate:
+                    startdate = max(startdate, self.startdate)
         if self.startdate and self.startdate > startdate:
             startdate = self.startdate
-        if not index:
+        try:
+            unused = self.date_range
+        except:
+            self.price_date_range = (startdate, enddate)
+        if pool:
+            index = pool.index
+        else:
             if self.currency == self.AUSTRALIAN_DOLLAR:
                 index_name = '^AORD'
             elif self.currency == self.US_DOLLAR:
@@ -543,6 +521,36 @@ class Pool(models.Model):
 #        return self._market_type
 
 
+    def import_csv(self, data, index_name='^GSPC', currency=Stock.US_DOLLAR):
+        '''
+        Imports all stocks from <data> into this pool. <data> is a file object
+        with the following format for each line:
+            <symbol>,<company name>,<startdate>,<enddate>
+        The first line may be column headers (but don't need to be). Column
+        headers start with < (as example line above).
+        '''
+        for line in data:
+            symbol, remainder = line.split(',', 1)
+            company_name, startdate_str, enddate_str = remainder.rsplit(',', 2)
+            symbol = symbol.upper()
+            stock, unused = Stock.objects.get_or_create(name=symbol, 
+                        description=company_name, currency=currency)
+            kwargs = {'stock': stock, 'pool': self}
+            try:
+                startdate = datestr2date(startdate_str)
+            except:
+                pass
+            else:
+                kwargs['startdate'] = startdate
+            try:
+                enddate = datestr2date(enddate_str)
+            except:
+                pass
+            else:
+                kwargs['enddate'] = enddate
+            StockPoolDates.objects.get_or_create(**kwargs)
+
+
     def _get_raw_list(self):
         '''
         Returns an exact list of all members for this Pool, where each member
@@ -741,7 +749,10 @@ class Pool(models.Model):
         '''
         missing_dates = []
         for stock, unused, unused in self._get_list():
-            dates = stock.missing_prices(self.index, startdate, enddate)
+#mod 130401
+#            dates = stock.missing_prices(self.index, startdate, enddate)
+            dates = stock.missing_prices(self, startdate, enddate)
+#/mod
             if dates:
                 missing_dates.append((stock, dates))
         return missing_dates
@@ -943,7 +954,7 @@ class Pool(models.Model):
 
 
     def get_stock_names(self):
-        return (s.stock.name for s in self.members.all())
+        return (s.name for s in self.members.all())
 
 
     def __unicode__(self):

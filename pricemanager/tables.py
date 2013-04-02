@@ -52,15 +52,19 @@ class MembersTable(tables.Table):
     '''
     For stocks in pool.
     '''
+    select = MakeSelectColumn(orderable=False)
     def render_id(self, record):
         kwargs = {'stock_id': record.stock.id}
         return mark_safe(make_link('show_stock', record.stock.name, kwargs))
     def render_stock(self, value):
         html = '{}'.format(value.description)
         return mark_safe(html)
+    startdate = tables.DateColumn(format='Y-m-d')
+    enddate = tables.DateColumn(format='Y-m-d')
     class Meta:
         model = StockPoolDates
         attrs = {'class': 'paleblue'}
+        sequence = ('select', 'id', 'stock', 'startdate', 'enddate')
 
 
 

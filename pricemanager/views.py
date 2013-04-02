@@ -19,13 +19,11 @@ from django_tables2 import RequestConfig
 from utils_python.utils import date2datestr
 
 from pricemanager.models import Pool, StockPoolDates, Stock
-from pricemanager.forms import PoolForm, MemberFormset, StockChartForm, \
-        DateRangeForm
-from pricemanager.tables import PoolsTable, ChannelsTable, ShortChannelsTable, \
-        MembersTable
+from pricemanager.forms import PoolForm, StockChartForm, DateRangeForm, \
+        MemberForm
+from pricemanager.tables import PoolsTable, MembersTable
 
 from TSB.utils import Notify
-#from metasystem.models import Method
 from channel.models import Channel
 from system.models import System
 
@@ -69,12 +67,21 @@ def show_pools(request):
             raise AttributeError('session has no valid pool_delete_list')
         del request.session['pool_delete_list']
         if request.POST.get('reply') == 'Yes':
-            for pool_id in pool_list:
-                pool = Pool.objects.get(id=pool_id)
-                pool.delete()
+            Pool.objects.filter(pk__in=pool_list).delete()
             notify = Notify('Pool(s) {} deleted'.format(','.join(pool_list)))
         elif request.POST.get('reply') == 'No':
             notify = Notify('Delete cancelled')
+
+    elif request.method == 'POST' and request.POST.get('upload'):
+        upload_file = request.FILES['poolfile']
+        pool_name, unused = '{}'.format(upload_file).split('.', 1)
+        startdate = datetime.date(2012,1,1)
+        currency = Stock.US_DOLLAR
+        index_name = '^GSPC'
+        index = Stock.objects.get(name=index_name)
+        pool, unused = Pool.objects.get_or_create(name=pool_name, 
+                index=index, startdate=startdate)
+        pool.import_csv(upload_file, index_name, currency)
 
     pools = Pool.objects.all()
     pools_table = PoolsTable(pools, order_by=('-id',))
@@ -85,6 +92,7 @@ def show_pools(request):
             })
 
 
+#from pricemanager.commands import dl_prices
 
 @login_required
 def show_pool(request, pool_id=None):
@@ -95,21 +103,23 @@ def show_pool(request, pool_id=None):
     splits = None
     missing_prices = None
     missing_channels = None
-    pool = Pool.objects.get(id=pool_id)
+    pool = None if pool_id == 'new' else Pool.objects.get(id=pool_id)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and request.POST.get('action'):
         daterangeform = DateRangeForm(request.POST)
         if not daterangeform.is_valid():
             notify = Notify('Invalid date(s)')
         else:
-            startdate = daterangeform.cleaned_data['startdate']
-            enddate = daterangeform.cleaned_data['enddate']
+            startdate = daterangeform.cleaned_data['fromdate']
+            enddate = daterangeform.cleaned_data['todate']
 
+#TODO: run some of the following as separate processes (huey)
             if request.POST.get('action') == 'Download index':
                 pool.index.download_history(startdate, enddate)
             elif request.POST.get('action') == 'Calculate index channels':
                 Channel.calculate(pool.index, startdate, enddate)
             elif request.POST.get('action') == 'Download all stock prices':
+#                dl_prices(pool, startdate, enddate)
                 pool.download_prices(startdate, enddate)
             elif request.POST.get('action') == 'Check for missing prices':
                 missing_prices = pool.missing_prices(startdate, enddate)
@@ -119,17 +129,61 @@ def show_pool(request, pool_id=None):
                 missing_channels = pool.missing_channels(startdate, enddate)
             elif request.POST.get('action') == 'Calculate all stock channels':
                 pool.calculate_channels(startdate, enddate)
-    else:
+    elif pool:
         enddate = datetime.date.today() if not pool.enddate else pool.enddate
         daterangeform = DateRangeForm(initial={
-                'startdate':pool.startdate, 'enddate': enddate})
+                'fromdate':pool.startdate, 'todate': enddate})
+    else:
+        daterangeform = None
+
+    if request.method == 'POST' and request.POST.get('save'):
+        poolform = PoolForm(request.POST, instance=pool)
+        memberform = MemberForm(request.POST, prefix='stock')
+        if poolform.is_valid():
+            pool = poolform.save()
+            if memberform.is_valid():
+                obj = memberform.save(commit=False)
+                obj.pool = pool
+                obj.save()
+    else: # first entry - no POST data
+        poolform = PoolForm(instance=pool)
+        memberform = MemberForm(prefix='stock')
+
+    if request.method == 'POST' and request.POST.get('action'):
+        stock_list = request.POST.getlist('id')
+
+        if request.POST.get('action') == 'Delete':
+            if not len(stock_list):
+                notify = Notify('Delete failed, select stock(s) to delete')
+            else:
+                notify = Notify('Delete stocks(s) {}?'.format(', '.join(
+                        StockPoolDates.objects.get(id=s).stock.name for s in 
+                        stock_list)))
+                notify.set_replies(request, ('Yes', 'No'))
+                request.session['stock_delete_list'] = stock_list
+
+    elif request.method == 'POST' and request.POST.get('reply'):
+        stock_list = request.session.get('stock_delete_list')
+        if not stock_list:
+            raise AttributeError('session has no valid stock_delete_list')
+        del request.session['stock_delete_list']
+        if request.POST.get('reply') == 'Yes':
+            stocks = [StockPoolDates.objects.get(id=s).stock.name for s in 
+                    stock_list]
+            StockPoolDates.objects.filter(id__in=stock_list).delete()
+            notify = Notify('Stock(s) {} deleted'.format(', '.join(stocks)))
+        elif request.POST.get('reply') == 'No':
+            notify = Notify('Delete cancelled')
+
 
     members = StockPoolDates.objects.filter(pool=pool).order_by('stock__name',)
     stocks_table = MembersTable(members, exclude=['pool',])
 
-    RequestConfig(request, paginate={'per_page': 500}).configure(stocks_table)
+    RequestConfig(request, paginate={'per_page': 100}).configure(stocks_table)
     return render(request, 'show_pool.html', {
             'pool': pool,
+            'poolform': poolform,
+            'memberform': memberform,
             'stocks_table': stocks_table,
             'daterangeform': daterangeform,
             'notify': notify,
@@ -169,34 +223,6 @@ def show_system_pool(request, system_id=None):
 
 
 
-@login_required
-def edit_pool(request, pool_id=None):
-    '''
-    Show contents of pool <pool_id>.
-    '''
-    pool = None if pool_id == 'new' else Pool.objects.get(id=pool_id)
-
-    if request.method == 'POST':
-        poolform = PoolForm(request.POST, instance=pool)
-        memberformset = MemberFormset(request.POST)
-        if poolform.is_valid():
-            pool = poolform.save()
-            if memberformset.is_valid():
-                memberformset.save()
-                return redirect('edit_pool', pool_id=pool.id)
-    else: # first entry - no POST data
-        poolform = PoolForm(instance=pool)
-        memberqueryset = StockPoolDates.objects.filter(pool=pool)
-        memberformset = MemberFormset(queryset=memberqueryset,
-                initial=[{'pool': pool}])
-
-    return render(request, 'edit_pool.html', {
-            'pool': pool,
-            'poolform': poolform,
-            'memberformset': memberformset,
-            })
-
-
 def show_stock(request, stock_id=None, symbol=None):
     '''
     Show stock chart and metrics. 
@@ -210,8 +236,12 @@ def show_stock(request, stock_id=None, symbol=None):
         raise SystemExit('Fatal Error: no stock_id or symbol specified.')
 
     missing_prices = stock.missing_prices()
-    missing_channels = stock.missing_channels()
-    splits = stock.check_splits()
+    if not missing_prices:
+        missing_channels = stock.missing_channels()
+        splits = stock.check_splits()
+    else:
+        missing_channels = []
+        splits = []
 
     #set default date range and lookback period:
     lookback = request.session.get('channel_lookback_period', Channel.YEAR)

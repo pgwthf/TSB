@@ -17,13 +17,37 @@ import operator
 
 def datestr2date(date_str):
     '''
-    converts a date string of the format yyyymmdd into a datetime.date object
+    Returns a datetime.date object, extracted from a string <date_str>.
+    The date format is one of the following:
+    yyyymmdd
+    yymmdd
+    dd-mm-yy
+    dd-mm-yyyy
+    mm/dd/yy
+    mm/dd/yyyy
+    Where only in the latter 4 formats both mm and dd may or may not have a 
+    leading zero.
+    In case of a 2-digit year, it is assumed to be after 2000
     '''
-    return datetime.date(int(date_str[0:4]), int(date_str[4:6]), 
-            int(date_str[6:8]))
+    if '/' in date_str:
+        m, d, y = date_str.split('/')
+    elif '-' in date_str:
+        d, m, y = date_str.split('-')
+    else:
+        d = date_str[-2:]
+        m = date_str[-4:-2]
+        y = date_str[:-4]
+    year = int(y)
+    if year < 100:
+        year += 2000
+    return datetime.date(year, int(m), int(d))
 
 
 def date2datestr(date):
+    '''
+    Returns a string of the format yyyymmdd that represents the datetime.date
+    object <date>.
+    '''
     return date.strftime('%Y%m%d')
 
 

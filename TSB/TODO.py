@@ -9,9 +9,27 @@ BUGS:
 * in all parameters.params_*: in description: if self.repr('x') must take the
 	list / all case into account for CHOICES
 
+1) import pool
+2) show ranks in pool
+3) use
+4) migrate to DjangoEurope
+5) trade
 
-* merge edit_pool with show_pool
-	- adding/deleting(/editing?) enties like in portfolio
+6) further develop, start with new data manager
+* from eoddata.com:
+	* daily (amex) prices - manual d/l
+	* daily (amex) prices - auto ftp d/l
+	* 20y historical (amex) prices - manual d/l
+	* daily(?) symbol changes (file format?)
+	* daily(?) splits (file format?)
+	* symbol lists (to get names)
+
+7) simultaneous with 6), new data formats - save space & time
+DB size:
+* replace decimal with integer (4 byte int of postgresql) uses 30% of the space
+* use postgresql date type (4 bytes), not time(stamp) (8 bytes)
+* use 8 byte integer for volume (index may have high vol)
+
 
 DISCRETIONARY:
 * see pool with indicators and click to see stock
@@ -163,7 +181,6 @@ css:
 * make h1 work
 
 show_pools:
-* reconsider new_pool?
 * Manage tab with:
 	- d/l all pools
 	- check all pools
