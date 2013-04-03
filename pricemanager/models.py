@@ -701,6 +701,15 @@ class Pool(models.Model):
 #            stock.download_history(startdate, enddate)
 
 
+    def download_latest_prices(self):
+        '''
+        Download the latest prices of all active stocks in this pool, including
+        the index.
+        '''
+        Price.download_prices_today(self._get_stock_index_list(
+                datetime.date.today()))
+
+
     def download_prices(self, fromdate=None, todate=None):
         '''
         Download the prices for all stocks in this pool in their ranges.

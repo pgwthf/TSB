@@ -16,8 +16,7 @@ from django.utils.safestring import mark_safe
 
 from django_tables2 import RequestConfig
 
-#from TSB.utils import init_redis, Notify
-from TSB.utils import Notify
+from TSB.utils import init_redis, Notify
 
 from metasystem.tables import MakeMetaSystemsTable
 from metasystem.models import MetaSystem, Group
@@ -88,8 +87,8 @@ def show_metasystems(request, group_id=None):
         group = None
         exclude = ()
 
-#    rs = init_redis()
-    rs = None
+    rs = init_redis()
+#    rs = None
     keys = ('reliability', 'profit_factor', 'exp_p_day', 'profit_pa', 
             'ann_profit', 'min_year', 'min_dd_ratio', 'sqn')
 

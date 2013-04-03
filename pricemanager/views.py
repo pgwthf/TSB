@@ -22,6 +22,7 @@ from pricemanager.models import Pool, StockPoolDates, Stock
 from pricemanager.forms import PoolForm, StockChartForm, DateRangeForm, \
         MemberForm
 from pricemanager.tables import PoolsTable, MembersTable
+from pricemanager.commands import dl_latest_prices
 
 from TSB.utils import Notify
 from channel.models import Channel
@@ -113,8 +114,11 @@ def show_pool(request, pool_id=None):
             startdate = daterangeform.cleaned_data['fromdate']
             enddate = daterangeform.cleaned_data['todate']
 
-#TODO: run some of the following as separate processes (huey)
-            if request.POST.get('action') == 'Download index':
+#FIXME: running separate (huey) processes does not work
+            if request.POST.get('action') == 'Download latest prices':
+#                dl_latest_prices(pool)
+                pool.download_latest_prices()
+            elif request.POST.get('action') == 'Download index':
                 pool.index.download_history(startdate, enddate)
             elif request.POST.get('action') == 'Calculate index channels':
                 Channel.calculate(pool.index, startdate, enddate)

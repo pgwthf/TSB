@@ -11,7 +11,7 @@ This file contains scheduled tasks that are run by huey.
 from __future__ import division
 from __future__ import absolute_import
 
-from huey.djhuey.decorators import periodic_command, crontab #, queue_command
+from huey.djhuey.decorators import periodic_command, crontab, queue_command
 
 from pricemanager.models import Price, Stock
 
@@ -39,6 +39,10 @@ def update_AUD():
     '''
     Price.download_prices_today(currency=Stock.AUSTRALIAN_DOLLAR)
 
-# #@queue_command
-# def dl_prices(pool, sd, ed):
-#     pool.download_prices(sd, ed)
+#@queue_command
+def dl_prices(pool, sd, ed):
+    pool.download_prices(sd, ed)
+
+@queue_command
+def dl_latest_prices(pool):
+    pool.download_latest_prices()

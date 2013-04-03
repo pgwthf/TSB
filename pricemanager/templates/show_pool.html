@@ -58,6 +58,7 @@ This pool is not used by any MetaSystems
 {% if user.is_superuser and pool.members.all %}
     {% next_tab %}
 
+<br /><input type="submit" name="action" value="Download latest prices">
 The date range for all actions below is {{ daterangeform }}
 <table>
 <tr><td colspan=2><h2>Manage pool index</h2></td></tr>

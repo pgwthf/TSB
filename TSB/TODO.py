@@ -1,4 +1,6 @@
 '''
+implement download todays prices button in view_pool 
+
 BUGS:
 * calculating takes too long: check if channel is taken from DB
 * edit_metasystem: markettype = 0 (wrong), but with /force : mt = any (right)
