@@ -181,11 +181,13 @@ TODO: document self.areas
                          **dataset['parameters'])[slice(*self.stock.date_range)]
                 if dataset['scale'] is not None:
                     data = [d*dataset['scale'] for d in data ]
-                ax = plot.line(axes[-1], data, colour=dataset['colour'])
+                ax, = plot.line(axes[-1], data, colour=dataset['colour'])
                 legend_ax.append(ax)
                 legend_txt.append('{}({})'.format(dataset['indicator'], ','.
                         join(str(v) for _,v in dataset['parameters'].items())))
             if len(legend_ax):
+                print legend_ax
+                print legend_txt
                 leg = plt.legend(legend_ax, legend_txt, loc='upper left', 
                         prop={'size':10})
                 leg.get_frame().set_alpha(0.5)

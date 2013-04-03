@@ -179,6 +179,9 @@ class Channel(models.Model):
         return (close - bottom) / (self.top(close) - bottom)
 
 
+    def quality(self):
+        return self.angle / self.width
+
     class Meta:
         ordering = ['stock', 'date', 'lookback']
         unique_together = (("stock", "date", "lookback"),)

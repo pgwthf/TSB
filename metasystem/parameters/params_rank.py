@@ -174,11 +174,53 @@ class rank_cha(_Rank):
                 'angles {} {}.'.format(self.repr('lb'), self.repr('op'), 
                 self.repr('tha'))
 
+    def _get_rank(self, angle):
+        return angle, getattr(operator, self.op)(angle, self.tha)
+
+    def get_table(self, stock_list, date, **kwargs):
+        channels = Channel.with_close.filter(stock__in=stock_list, date=date,
+                lookback=self.lb)
+        newlist = []
+        for c in channels:
+            value, valid = self._get_rank(c.angle)
+            if valid:
+                newlist.append({
+                        'symbol': c.stock,
+                        'company': c.stock,
+                        'quality': c.quality,
+                        'angle': value,
+                        'width': c.width,
+                        'bottom': c.bottom,
+                        'close': c.close,
+                        'rc': c.rc,
+                        'stoploss': c.stoploss,
+                        })
+        newlist.sort(key=operator.itemgetter('angle'), 
+                reverse=(self.op == 'gt'))
+        return newlist
+
+    def make_table(self, **kwargs):
+        class RankTable(tables.Table):
+            symbol = TSBtables.SymbolColumn()
+            company = TSBtables.CompanyColumn()
+            quality = TSBtables.MakeFloatColumn('{:3.2f}')
+            angle = TSBtables.MakeFloatColumn('{:2.1f}%')
+            width = TSBtables.MakeFloatColumn('{:2.1f}%')
+            bottom = TSBtables.MakeFloatColumn('{:3.2f}')
+            close = TSBtables.MakeFloatColumn('{:3.2f}')
+            rc = TSBtables.MakeFloatColumn('{:3.2f}')
+            stoploss = TSBtables.MakeFloatColumn('{:2.1f}%')
+            class Meta:
+                attrs = {'class': 'paleblue'}
+        return RankTable(**kwargs)
+
     def get_list(self, stock_list, date, **kwargs):
         ranked_stocklist = []
         for stock in stock_list:
-            value = stock.price.channel.angle(self.lb)[date]
-            valid = getattr(operator, self.op)(value, self.tha)
+            value, valid = self._get_rank(
+                    stock.price.channel.angle(self.lb)[date])
+#             value = stock.price.channel.angle(self.lb)[date]
+#             valid = getattr(operator, self.op)(value, self.tha)
             ranked_stocklist.append((stock, value, valid))
         ranked_stocklist.sort(key=operator.itemgetter(1), 
                 reverse=(self.op == 'gt'))
@@ -218,7 +260,6 @@ class rank_chq(_Rank):
         return value, valid
 
     def get_table(self, stock_list, date, **kwargs):
-        from channel.models import Channel
         channels = Channel.with_close.filter(stock__in=stock_list, date=date,
                 lookback=self.lb)
         newlist = []
@@ -425,13 +466,59 @@ class rank_chas(_Rank):
                 'stocks with angles greater than {} and VSL lower than {}.'.\
                 format(self.repr('lb'), self.repr('tha'), self.repr('ths'))
 
+    def _get_rank(self, angle, stoploss, close):
+        vsl = 100 * (1 - stoploss / float(close))
+        valid = (angle > self.tha) and (vsl < self.ths)
+        return angle, valid
+
+    def get_table(self, stock_list, date, **kwargs):
+        channels = Channel.with_close.filter(stock__in=stock_list, date=date,
+                lookback=self.lb)
+        newlist = []
+        for c in channels:
+            value, valid = self._get_rank(c.angle, c.stoploss(), c.close)
+            if valid:
+                newlist.append({
+                        'symbol': c.stock,
+                        'company': c.stock,
+#                        'quality': value,
+                        'angle': c.angle,
+                        'width': c.width,
+                        'bottom': c.bottom,
+                        'close': c.close,
+                        'rc': c.rc,
+                        'stoploss': c.stoploss,
+                        })
+        newlist.sort(key=operator.itemgetter('angle'), 
+                reverse=(self.op == 'gt'))
+        return newlist
+
+    def make_table(self, **kwargs):
+        class RankTable(tables.Table):
+            symbol = TSBtables.SymbolColumn()
+            company = TSBtables.CompanyColumn()
+#            quality = TSBtables.MakeFloatColumn('{:3.2f}')
+            angle = TSBtables.MakeFloatColumn('{:2.1f}%')
+            width = TSBtables.MakeFloatColumn('{:2.1f}%')
+            bottom = TSBtables.MakeFloatColumn('{:3.2f}')
+            close = TSBtables.MakeFloatColumn('{:3.2f}')
+            rc = TSBtables.MakeFloatColumn('{:3.2f}')
+            stoploss = TSBtables.MakeFloatColumn('{:2.1f}%')
+            class Meta:
+                attrs = {'class': 'paleblue'}
+        return RankTable(**kwargs)
+
     def get_list(self, stock_list, date, **kwargs):
         ranked_stocklist = []
         for stock in stock_list:
-            angle = stock.price.channel.angle(self.lb)[date]
-            vsl = stock.price.channel.stoploss(self.lb, date)
-            vsl_p = 100 * (1 - vsl / stock.price.close[date])
-            valid = (angle > self.tha) and (vsl_p < self.ths)
+            angle, valid = self._get_rank(
+                    stock.price.channel.angle(self.lb)[date],
+                    stock.price.channel.stoploss(self.lb, date),
+                    stock.price.close[date])
+#             angle = stock.price.channel.angle(self.lb)[date]
+#             vsl = stock.price.channel.stoploss(self.lb, date)
+#             vsl_p = 100 * (1 - vsl / stock.price.close[date])
+#             valid = (angle > self.tha) and (vsl_p < self.ths)
             ranked_stocklist.append((stock, angle, valid))
         ranked_stocklist.sort(key=operator.itemgetter(1), reverse=True)
         return ranked_stocklist

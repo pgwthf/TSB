@@ -3,15 +3,17 @@ BUGS:
 * calculating takes too long: check if channel is taken from DB
 * edit_metasystem: markettype = 0 (wrong), but with /force : mt = any (right)
 * backtest on short timeperiod fails (e.g. 1 year)
-* where is edit pool? - use different edit process
 * email van site werkt niet meer
 * there are still memory leaks: 30% after a bit of browsing, 15% after backtest
 * in all parameters.params_*: in description: if self.repr('x') must take the
 	list / all case into account for CHOICES
 
-1) import pool
-2) show ranks in pool
-3) use
+DONE 1) import pool
+DONE 2) show ranks in pool
+3) use:
+	+ develop position sizing idea
+	+ show daily increment in % and $
+	+ rank by channel length-independent quality & width
 4) migrate to DjangoEurope
 5) trade
 

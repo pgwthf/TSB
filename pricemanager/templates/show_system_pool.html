@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load tabtags %}
 
 {% block title %}Pool: {{ pool.name }}{% endblock %}
@@ -15,17 +15,13 @@ View  pool: <a href="{% url 'show_pool' pool_id=pool.id %}">{{ pool.name }}</a> 
 
 {% block content %}
 
-
 {% start_tabs %}
-
 
 {% load render_table from django_tables2 %}
 {% for stock_table in stock_tables %}
-{% render_table stock_table %}
-{% next_tab %}
+    {% render_table stock_table %}
+    {% next_tab %}
 {% endfor %}
-
-
 
 <h2>Pool {{pool.id}}: {{pool.name}}</h2>
 {{ pool.description }}
@@ -34,7 +30,7 @@ View  pool: <a href="{% url 'show_pool' pool_id=pool.id %}">{{ pool.name }}</a> 
 <br />Pool index: <a href="{% url 'show_stock' stock_id=pool.index.id %}">
 {{ pool.index.description }} ({{ pool.index.name }})</a>
 (valid from {{ pool.index.startdate }} to {% if pool.enddate %}{{ pool.enddate }}{% else %}today{% endif %})
-<br /><a href="{% url 'edit_pool' pool_id=pool.id %}">Edit this pool</a>
+<br /><a href="{% url 'show_pool' pool_id=pool.id %}">Edit this pool</a>
 <br />This pool is used by the following MetaSystems:<ul>
 {% for ms in pool.metasystem_set.all %}
 <br>li<a href="{% url 'show_metasystem' metasystem_id=ms.id %}">{{ ms.id }}: {{ ms.name }}</a>/li
@@ -46,4 +42,3 @@ View  pool: <a href="{% url 'show_pool' pool_id=pool.id %}">{{ pool.name }}</a> 
 {% end_tabs %}
 
 {% endblock %}
-
