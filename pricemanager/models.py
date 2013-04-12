@@ -739,12 +739,19 @@ class Pool(models.Model):
 #                 skip = False
 #             if skip:
 #                 continue
+            print '1'
             if fromdate is not None:
+                print 'a'
                 startdate = max(startdate, fromdate)
+            print '2'
             if enddate is not None:
+                print 'b'
                 enddate = min(enddate, todate)
+            print '3'
             if not enddate:
+                print 'c'
                 enddate = datetime.date.today()
+            print '4'
             if enddate >= startdate:
                 stock.download_history(startdate, enddate)
 
