@@ -184,7 +184,7 @@ class Channel(models.Model):
 
     class Meta:
         ordering = ['stock', 'date', 'lookback']
-        unique_together = (("stock", "date", "lookback"),)
+        unique_together = (('stock', 'date', 'lookback'),)
 
 
     def __unicode__(self):

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %}Documentation{% endblock %}
 {% block content %}
 
@@ -56,10 +56,10 @@ S	a new method forces any and all positions from other methods to exit
 			only for market cond.
 PS	exits are never forced
 	
+{% load staticfiles %}
+<object data="{% static 'data_diagram0_1.svg' %}" type="image/svg+xml"></object>
 
-<object data="/static/data_diagram0_1.svg" type="image/svg+xml"></object>
-
-<object data="/static/trade_flowchart0_1.svg" type="image/svg+xml"></object>
+<object data="{% static 'trade_flowchart0_1.svg' %}" type="image/svg+xml"></object>
 
 <table>
 <tr><td>Metasystem</td><td>

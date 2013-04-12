@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load tabtags %}
 {% load render_table from django_tables2 %}
 
@@ -28,7 +28,8 @@ MetaSystem {{metasystem.id}} "<a href="{% url 'edit_metasystem' metasystem_id=me
 
 
     {% render_table systems_table %}
-<script type="text/javascript" src="/static/fxheader1.js"></script>
+    {% load staticfiles %}
+<script type="text/javascript" src="{% static 'fxheader1.js' %}"></script>
 <script type="text/javascript">fxheaderInit('systable',600);</script>
 
     { % next_tab % }

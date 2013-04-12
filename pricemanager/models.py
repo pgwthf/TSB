@@ -4,8 +4,25 @@ pricemanager/models.py v0.1 120815
 Created on 120618
 
 @author: edwin
-'''
 
+Copyright (C) 2013 Edwin van Opstal
+
+This file is part of TradingSystemBuilder.
+
+    TradingSystemBuilder is free software: you can redistribute it and/or 
+    modify it under the terms of the GNU General Public License as published 
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    TradingSystemBuilder is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with TradingSystemBuilder.
+    If not, see <http://www.gnu.org/licenses/>.
+'''
 from __future__ import division
 from __future__ import absolute_import
 
@@ -13,24 +30,19 @@ import datetime, time
 from operator import itemgetter
 from collections import defaultdict
 
-from django.db import models
-from django.db import transaction
-from django.db.models import Max, Min
-
-from pricemanager.yahoo import download_today, download_history
+from django.db import models, transaction
 
 from TSB.utils import notify_admin
 from utils_python.utils import previous_weekday, last_year, random_string, \
         datestr2date
+from chart.models import Chart
+from channel.models import Channel
 
 from pricemanager.indicators.multi import StockPrices
 from pricemanager.indicators.single import StockPrice
+from pricemanager.yahoo import download_today, download_history
+#from pricemanager.download import download_today, download_history
 
-from chart.models import Chart
-
-from channel.models import Channel
-
-#from market.models import MarketType
 
 
 class Stock(models.Model):
@@ -390,7 +402,7 @@ class Price(models.Model):
         '''
         Return the lowest date in the database for <stock>
         '''
-        qs = Price.objects.filter(stock=stock).aggregate(Min('date'))
+        qs = Price.objects.filter(stock=stock).aggregate(models.Min('date'))
         return qs['date__min']
 
 
@@ -399,7 +411,7 @@ class Price(models.Model):
         '''
         Return the highest date in the database for <stock>
         '''
-        qs = Price.objects.filter(stock=stock).aggregate(Max('date'))
+        qs = Price.objects.filter(stock=stock).aggregate(models.Max('date'))
         return qs['date__max']
 
 
@@ -528,13 +540,15 @@ class Pool(models.Model):
             <symbol>,<company name>,<startdate>,<enddate>
         The first line may be column headers (but don't need to be). Column
         headers start with < (as example line above).
+#FIXME: does not handle existing stocks!
         '''
         for line in data:
             symbol, remainder = line.split(',', 1)
             company_name, startdate_str, enddate_str = remainder.rsplit(',', 2)
             symbol = symbol.upper()
             stock, unused = Stock.objects.get_or_create(name=symbol, 
-                        description=company_name, currency=currency)
+                    defaults={'description': company_name, 
+                    'currency': currency})
             kwargs = {'stock': stock, 'pool': self}
             try:
                 startdate = datestr2date(startdate_str)

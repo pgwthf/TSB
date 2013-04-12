@@ -1,7 +1,29 @@
 '''
-implement download todays prices button in view_pool 
+Trading System Builder is an integrated package that allows:
+	* defining trading systems
+	* backtesting trading systems on historical data
+	* real-time running (paper trading) of trading systems
+	* managing (discretionary) portfolios
+	* selecting and filtering stocks
+	* charting
+All of the above can be either stand-alone or online, where stand-alone is more
+appropriate for backtesting and online for real-time running.
+Instead of paper trades, the user can take real trades, but currently no
+interface is planned for that.
+
+Components:
+	* stockmanager:
+		package that maintains stocks, markets, prices, indices, currencies
+	* poolmanager
+	* trademanager
+	* equitymanager
+
+decouple software from redis/huey (i.e. make that a separate package)
+	* try NoRedis
+	* run cron jobs (in other timezone?)
 
 BUGS:
+* huey processes don't work?
 * calculating takes too long: check if channel is taken from DB
 * edit_metasystem: markettype = 0 (wrong), but with /force : mt = any (right)
 * backtest on short timeperiod fails (e.g. 1 year)
@@ -34,9 +56,11 @@ DB size:
 * use postgresql date type (4 bytes), not time(stamp) (8 bytes)
 * use 8 byte integer for volume (index may have high vol)
 
+8) turn channel into a std indicator: speed up using C?
 
 DISCRETIONARY:
 * see pool with indicators and click to see stock
+* take trade inside stock view (enter + vol, or exit)
 * see mkt cond
 * (edit?)
 * calc performance / equity

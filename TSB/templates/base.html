@@ -3,7 +3,8 @@
 <head>
 <title>{% block title %}{% endblock %}</title>
 {% block js %}{% endblock %}
-<link rel="stylesheet" type="text/css" href="/static/django_tables2.css" />
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'django_tables2.css' %}" />
 </head>
 <body>
 

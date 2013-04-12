@@ -17,16 +17,15 @@ from django.contrib.auth.decorators import login_required
 from django_tables2 import RequestConfig
 
 from utils_python.utils import date2datestr
+from TSB.utils import Notify
+from channel.models import Channel
+from system.models import System
 
 from pricemanager.models import Pool, StockPoolDates, Stock
 from pricemanager.forms import PoolForm, StockChartForm, DateRangeForm, \
         MemberForm
 from pricemanager.tables import PoolsTable, MembersTable
-from pricemanager.commands import dl_latest_prices
-
-from TSB.utils import Notify
-from channel.models import Channel
-from system.models import System
+#from pricemanager.commands import dl_latest_prices #, dl_prices
 
 
 
@@ -93,8 +92,6 @@ def show_pools(request):
             })
 
 
-#from pricemanager.commands import dl_prices
-
 @login_required
 def show_pool(request, pool_id=None):
     '''
@@ -114,7 +111,6 @@ def show_pool(request, pool_id=None):
             startdate = daterangeform.cleaned_data['fromdate']
             enddate = daterangeform.cleaned_data['todate']
 
-#FIXME: running separate (huey) processes does not work
             if request.POST.get('action') == 'Download latest prices':
 #                dl_latest_prices(pool)
                 pool.download_latest_prices()
@@ -123,6 +119,7 @@ def show_pool(request, pool_id=None):
             elif request.POST.get('action') == 'Calculate index channels':
                 Channel.calculate(pool.index, startdate, enddate)
             elif request.POST.get('action') == 'Download all stock prices':
+#FIXME: running separate (huey) process does not work
 #                dl_prices(pool, startdate, enddate)
                 pool.download_prices(startdate, enddate)
             elif request.POST.get('action') == 'Check for missing prices':

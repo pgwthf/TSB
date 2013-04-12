@@ -23,7 +23,7 @@ class Trade(models.Model):
     '''
     system = models.ForeignKey('system.System')
     stock = models.ForeignKey(Stock)
-    method = models.ForeignKey('metasystem.Method') # ls is in Method
+    method = models.ForeignKey('metasystem.Method') # direction is in Method
     volume = models.PositiveIntegerField(null=True)
     rule_entry = models.CharField(max_length=10)
     price_entry = models.DecimalField(max_digits=6, decimal_places=2, null=True)
