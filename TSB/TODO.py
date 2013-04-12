@@ -1,4 +1,15 @@
 '''
+DjangoEurope:
+* decouple software from redis/huey (i.e. make that a separate package)
+	- try NoRedis
+	- run cron jobs (in other timezone?)
+* Get production server running
+* make manual (or cron-runnable) scripts for updates
+
+* test noredis
+
+stockmanager needs -v cmd line option
+
 Trading System Builder is an integrated package that allows:
 	* defining trading systems
 	* backtesting trading systems on historical data
@@ -18,9 +29,6 @@ Components:
 	* trademanager
 	* equitymanager
 
-decouple software from redis/huey (i.e. make that a separate package)
-	* try NoRedis
-	* run cron jobs (in other timezone?)
 
 BUGS:
 * huey processes don't work?

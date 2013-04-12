@@ -18,29 +18,39 @@ import operator
 def datestr2date(date_str):
     '''
     Returns a datetime.date object, extracted from a string <date_str>.
-    The date format is one of the following:
-    yyyymmdd
-    yymmdd
-    dd-mm-yy
-    dd-mm-yyyy
-    mm/dd/yy
-    mm/dd/yyyy
-    Where only in the latter 4 formats both mm and dd may or may not have a 
-    leading zero.
-    In case of a 2-digit year, it is assumed to be after 2000
     '''
+    valid_formats = '''The following date formats are valid:
+    yyyymmdd  yymmdd
+    d-m-yy    d-m-yyyy
+    m/d/yy    m/d/yyyy
+Where in the latter 4 formats m and d may be 1 or 2 digits which may include
+a leading zero.
+In case of a 2-digit year, it is assumed to be after 2000'''
     if '/' in date_str:
-        m, d, y = date_str.split('/')
+        try:
+            m, d, y = date_str.split('/')
+        except:
+            raise ValueError('Date {} must have no or exactly 2 slashes. {}'.
+                    format(date_str, valid_formats))
     elif '-' in date_str:
-        d, m, y = date_str.split('-')
-    else:
+        try:
+            d, m, y = date_str.split('-')
+        except:
+            raise ValueError('Date {} must have no or exactly 2 dashes. {}'.
+                    format(date_str, valid_formats))
+    elif len(date_str) == 8 or len(date_str) == 6:
         d = date_str[-2:]
         m = date_str[-4:-2]
         y = date_str[:-4]
+    else:
+        raise ValueError('Date format not recognised. {}'.format(valid_formats))
     year = int(y)
     if year < 100:
         year += 2000
-    return datetime.date(year, int(m), int(d))
+    try:
+        return datetime.date(year, int(m), int(d))
+    except ValueError:
+        raise ValueError('Invalid date {}. {}'.format(date_str, valid_formats))
 
 
 def date2datestr(date):
