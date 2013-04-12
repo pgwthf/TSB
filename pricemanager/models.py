@@ -30,6 +30,7 @@ import datetime, time
 from operator import itemgetter
 from collections import defaultdict
 
+from django import db
 from django.db import models, transaction
 
 from TSB.utils import notify_admin
@@ -181,6 +182,7 @@ class Stock(models.Model):
         data = download_history(self, startdate, enddate)
         if data:
             Price.insert_prices(data)
+        db.reset_queries()
 
 
     def get_earliest_date(self):
