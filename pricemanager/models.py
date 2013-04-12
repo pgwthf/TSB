@@ -733,25 +733,18 @@ class Pool(models.Model):
         If <fromdate> and <todate> are specified, the stock is downloaded in
         that range, unless its own range is narrower.
         '''
-#         skip = True
+#        skip = True
         for stock, startdate, enddate in self._get_list():
-#             if stock.name == 'WEC':
+#             if stock.name == 'CAT':
 #                 skip = False
 #             if skip:
 #                 continue
-            print '1'
             if fromdate is not None:
-                print 'a'
                 startdate = max(startdate, fromdate)
-            print '2'
-            if enddate is not None:
-                print 'b'
+            if enddate is not None and todate is not None:
                 enddate = min(enddate, todate)
-            print '3'
             if not enddate:
-                print 'c'
                 enddate = datetime.date.today()
-            print '4'
             if enddate >= startdate:
                 stock.download_history(startdate, enddate)
 
