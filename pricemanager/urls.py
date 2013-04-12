@@ -1,9 +1,9 @@
 from __future__ import division
 from __future__ import absolute_import
 
-#from django.conf import settings
+from django.conf import settings
 from django.conf.urls import patterns, url
-#from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = patterns('pricemanager.views',
 
@@ -33,10 +33,10 @@ urlpatterns = patterns('pricemanager.views',
             name='show_system_pool'),
 )
 
-# if settings.DEBUG:
-#     urlpatterns += patterns('',
-#         url(r'^media/(?P.*)$', 'django.views.static.serve', {
-#             'document_root': settings.MEDIA_ROOT,
-#         }),
-#    )
-# urlpatterns += staticfiles_urlpatterns()
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        url(r'^static/(?P<path>.*)$', 
+            'django.views.static.serve',
+            {'document_root': settings.STATIC_ROOT,}),
+   )
+urlpatterns += staticfiles_urlpatterns()
