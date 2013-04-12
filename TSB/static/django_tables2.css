@@ -118,7 +118,8 @@ fieldset.methodcontainer > legend {
 \*------------------------------------*/
 html{
 	height:100%;
-	background:#eee url(/img/css/bg.gif) top left repeat-x;
+/*	background:#eee url(/img/css/bg.gif) top left repeat-x; */
+	background: #eee;
 }
 body{
 	font-family:Arial,Verdana,sans-serif;
@@ -451,7 +452,8 @@ table.paleblue tr.even {
 }
 
 table.paleblue + ul.pagination {
-    background: white url(../img/pagination-bg.gif) left 180% repeat-x;
+/*    background: white url(../img/pagination-bg.gif) left 180% repeat-x; */
+    background: white;
     overflow: auto;
     margin: 0;
     padding: 10px;

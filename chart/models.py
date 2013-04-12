@@ -186,8 +186,8 @@ TODO: document self.areas
                 legend_txt.append('{}({})'.format(dataset['indicator'], ','.
                         join(str(v) for _,v in dataset['parameters'].items())))
             if len(legend_ax):
-                print legend_ax
-                print legend_txt
+#                print legend_ax
+#                print legend_txt
                 leg = plt.legend(legend_ax, legend_txt, loc='upper left', 
                         prop={'size':10})
                 leg.get_frame().set_alpha(0.5)
@@ -253,7 +253,7 @@ class Plot(object):
         '''
         steps = (1,2,3,4,6,12)
         step = steps[min(len(self.dates) // 265, 5)]
-        print len(self.dates), step
+#        print len(self.dates), step
         axis.set_axisbelow(True)
         axis.xaxis.grid(b=True, which='minor', color='0.90', linewidth=0.5)
         if len(self.dates) < 260:
