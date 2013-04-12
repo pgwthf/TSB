@@ -743,7 +743,7 @@ class Pool(models.Model):
                 startdate = max(startdate, fromdate)
             if enddate is not None:
                 enddate = min(enddate, todate)
-            elif not enddate:
+            if not enddate:
                 enddate = datetime.date.today()
             if enddate >= startdate:
                 stock.download_history(startdate, enddate)
