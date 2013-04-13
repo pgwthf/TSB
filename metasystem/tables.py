@@ -31,10 +31,11 @@ def MakeResultsColumn(rs):
             if not maxresults:
                 maxresults = record.maxresults
             rs_key = 'TSBspeed{}'.format(record.id)
-            if rs.get(rs_key):
-                speed = float(rs.get(rs_key))
-            else:
-                speed = 0
+#             if rs.get(rs_key):
+#                 speed = float(rs.get(rs_key))
+#             else:
+#                 speed = 0
+            speed = 0
             n = MetaSystem.objects.get(id=record.id).system_set.filter().count()
             if n:
                 kwargs = {'metasystem_id': record.id}

@@ -135,7 +135,7 @@ TODO: MAKE GENERIC
 def draw_stock_chart(request, symbol, startdate_str=None, enddate_str=None, 
         lookback=None):
     '''
-    input: stock, date range, chart format (redis?)
+    input: stock, date range, chart format
         generate chart object
     set all subcharts
     generate plot

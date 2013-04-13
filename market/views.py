@@ -11,11 +11,7 @@ from __future__ import absolute_import
 import datetime
 
 from django.shortcuts import render
-
-
-#from TSB.utils import init_redis
 from utils_python.utils import str2dict
-
 from market.forms import DateForm, ChartSettingsForm
 #from chart.models import get_market_condition
 
@@ -39,7 +35,7 @@ def get_settings(data):
 
 def get_initial(settings):
     '''
-    Translates the (redis) settings to initial values for the form.
+    Translates the settings to initial values for the form.
     '''
     initial = {}
     for key in ('n_ma', 'n_atr', 'vol_zones', 'trend_zones'):
@@ -56,7 +52,6 @@ def show_market_type(request):
     '''
     Market conditions page
     '''
-#    rs = init_redis()
     rs = None
     message = ''
     startdate = datetime.date(2010,1,1)
@@ -73,7 +68,6 @@ def show_market_type(request):
             settings = get_settings(data)
             rs.set('market_conditions_settings', settings)
     else:
-        # get initial data from redis
         settings = str2dict(rs.get('market_conditions_settings'))
         if settings:
             data = get_initial(settings)

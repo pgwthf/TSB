@@ -22,7 +22,6 @@ from pricemanager.models import Pool
 from tradesignal.models import Positions, Trades, Signals #, ExitSignal
 from equity.models import EquityHistory
 from system.models import System
-#from TSB.utils import init_redis
 from TSB.utils import get_choice
 
 from metasystem.parameters import fields
@@ -385,13 +384,12 @@ TODO: discr systems should have LONG + SHORT method
         '''
 TODO: drop speed measurement and move to % of total progress
         Run this MetaSystem with random parameters.
-        The average number of calculations per hour is written to the redis
+        The average number of calculations per hour is written to the
         database so it can be displayed by a view.
         '''
         self._init_runs()
         if self.is_randomisable():
 
-#            rs = init_redis()
             rs = None
             rs_key = 'TSBspeed{}'.format(self.id)
             factor_curr = 2./11.         # Exponential moving average over 10

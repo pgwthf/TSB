@@ -592,6 +592,5 @@ class modelsTests(TestCase):
 #        stock = Stock.objects.get(name='AAPL')
 #        date1 = date(2010,1,5)
 #
-#        redis.Redis('')
 #        
 #        download_today(Stock.US_DOLLAR)

@@ -1,6 +1,5 @@
 '''
 DjangoEurope:
-* remove huey dependency
 * make django_no_redis app with only basic functions - enough to store std types
 * remove redis dependency
 * Get production server running

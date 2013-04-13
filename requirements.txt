@@ -5,5 +5,4 @@ matplotlib==1.2.0
 numpy==1.7.0
 psycopg2==2.4.6
 pytz==2013b
-redis==2.7.2
 wsgiref==0.1.2

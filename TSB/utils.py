@@ -14,9 +14,6 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.middleware.csrf import get_token
 
-import redis
-
-import TSB.settings
 
 
 def notify_admin(text):
@@ -29,14 +26,6 @@ def notify_admin(text):
     return
     send_mail('TSB notification', text, 'edenka1993@gmail.com', 
             ['evo@se-technology.com'], fail_silently=False)
-
-
-def init_redis():
-    '''
-    Returns a redis object based on the HUEY_CONFIG settings for Django.
-    '''
-    server = TSB.settings.HUEY_CONFIG['RESULT_STORE_CONNECTION']['host']
-    return redis.Redis(server)
 
 
 def make_link(name, text, kwargs=None, newtab=False, title=None):
