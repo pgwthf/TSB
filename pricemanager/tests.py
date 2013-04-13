@@ -533,8 +533,7 @@ class modelsTests(TestCase):
     # download_prices_today
 
         #
-        # huey tests in separate class
-
+ 
 #        import cPickle as pickle
 #        stock_list = Pool.get_todays_stocks_for_download(Stock.US_DOLLAR)
 #        print stock_list

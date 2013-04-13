@@ -1,13 +1,17 @@
 '''
 DjangoEurope:
-* decouple software from redis/huey (i.e. make that a separate package)
-	- try NoRedis
-	- run cron jobs (in other timezone?)
+* remove huey dependency
+* make django_no_redis app with only basic functions - enough to store std types
+* remove redis dependency
 * Get production server running
 * make manual (or cron-runnable) scripts for updates
 
 * test noredis, make more thorough NoRedis class that emulates more functionality
 
+check cython or shedskin for (channel) indicators (how to deal with different os'es?)
+	make automated profiler to see if this makes sense.
+	Indicators are the most obvious choice, but maybe also the datedlist?
+	
 
 stockmanager needs -v cmd line option
 
@@ -32,7 +36,6 @@ Components:
 
 
 BUGS:
-* huey processes don't work?
 * calculating takes too long: check if channel is taken from DB
 * edit_metasystem: markettype = 0 (wrong), but with /force : mt = any (right)
 * backtest on short timeperiod fails (e.g. 1 year)
@@ -193,7 +196,7 @@ TODO :
 * implement filter to remove identical systems? - or to prevent calculating identical systems
 * show_trades express p/l as % of equity
 	- in trades table: show % profit & % of equity profit
-* use huey process for calcs
+* use separate process for calcs
 * use description (sentence) in edit_metasystem for alloc & eq model
 	- do together with re-selecting method if not readonly 
 	- improve rendering of mjultiwidget (ParamWidget)

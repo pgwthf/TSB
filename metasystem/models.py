@@ -17,8 +17,6 @@ from django import db
 from django.db import models
 from django.forms.models import model_to_dict
 
-from huey.djhuey.decorators import queue_command
-
 from utils_python.utils import random_string, str2dict, eval_conditions
 from pricemanager.models import Pool
 from tradesignal.models import Positions, Trades, Signals #, ExitSignal
@@ -381,7 +379,8 @@ TODO: discr systems should have LONG + SHORT method
         return n
 
 
-    @queue_command
+#    @queue_command
+#TODO: start this in separate process
     def _run_all(self):
         '''
 TODO: drop speed measurement and move to % of total progress

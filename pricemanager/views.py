@@ -25,7 +25,6 @@ from pricemanager.models import Pool, StockPoolDates, Stock
 from pricemanager.forms import PoolForm, StockChartForm, DateRangeForm, \
         MemberForm
 from pricemanager.tables import PoolsTable, MembersTable
-#from pricemanager.commands import dl_latest_prices #, dl_prices
 
 
 
@@ -119,7 +118,7 @@ def show_pool(request, pool_id=None):
             elif request.POST.get('action') == 'Calculate index channels':
                 Channel.calculate(pool.index, startdate, enddate)
             elif request.POST.get('action') == 'Download all stock prices':
-#FIXME: running separate (huey) process does not work
+#CONSIDER: run separate process?
 #                dl_prices(pool, startdate, enddate)
                 pool.download_prices(startdate, enddate)
             elif request.POST.get('action') == 'Check for missing prices':

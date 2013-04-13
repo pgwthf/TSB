@@ -5,8 +5,8 @@ Created on 121009
 
 @author: edwin
 '''
+#TODO: implement as cmd line program
 #CONSIDER: use compressed data (tar/bzip)
-#CONSIDER: send to huey as separate process (screws up message!)
 #CONSIDER: select whether to backup trades/equity
 
 import datetime
