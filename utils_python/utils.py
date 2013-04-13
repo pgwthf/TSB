@@ -122,6 +122,34 @@ def round_by_format(float_number, fmt):
     return float(string)
 
 
+def is_weekday(date):
+    '''
+    Returns a boolean that indicates if date is a weekday.
+
+    Args:
+        date (datetime or datetime.date)
+    Returns:
+        (boolean)
+    Raises:
+        something ivalid date bla bla
+    '''
+    return True if date.weekday() < 5 else False
+
+
+def is_weekend(date):
+    '''
+    Returns a boolean that indicates if date is a weekday.
+
+    Args:
+        date (datetime or datetime.date)
+    Returns:
+        (boolean)
+    Raises:
+        something ivalid date bla bla
+    '''
+    return not is_weekday(date)
+
+
 def previous_weekday(date):
     '''
     Return the last weekday before date

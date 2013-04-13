@@ -6,7 +6,8 @@ DjangoEurope:
 * Get production server running
 * make manual (or cron-runnable) scripts for updates
 
-* test noredis
+* test noredis, make more thorough NoRedis class that emulates more functionality
+
 
 stockmanager needs -v cmd line option
 
