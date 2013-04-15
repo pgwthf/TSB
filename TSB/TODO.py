@@ -1,16 +1,13 @@
 '''
 DjangoEurope:
-* make django_no_redis app with only basic functions - enough to store std types
-* remove redis dependency
-* Get production server running
-* make manual (or cron-runnable) scripts for updates
+* test  cron-runnable scripts for updates
+* Get production server running (flup??)
 
-* test noredis, make more thorough NoRedis class that emulates more functionality
+clean up utils_python & make separate package
 
 check cython or shedskin for (channel) indicators (how to deal with different os'es?)
 	make automated profiler to see if this makes sense.
 	Indicators are the most obvious choice, but maybe also the datedlist?
-	
 
 stockmanager needs -v cmd line option
 

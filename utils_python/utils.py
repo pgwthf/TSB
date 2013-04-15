@@ -53,14 +53,16 @@ In case of a 2-digit year, it is assumed to be after 2000'''
         raise ValueError('Invalid date {}. {}'.format(date_str, valid_formats))
 
 
-def date2datestr(date):
+def date2datestr(date, fmt='yyyymmdd'):
     '''
+TODO: make fmt work
     Returns a string of the format yyyymmdd that represents the datetime.date
     object <date>.
     '''
     return date.strftime('%Y%m%d')
 
 
+#TODO: move to equity app
 def compress(in_list):
     '''
     Takes a list of tuples of 2 ints and returns a list of bytes where each
@@ -78,7 +80,7 @@ def compress(in_list):
         out_list.append(x + 32*y)
     return out_list
 
-
+#TODO: move to equity app
 def decompress(in_list):
     '''
     Takes a list of ints (bytes) Returns a list of tuples of 2 ints. The first
@@ -95,6 +97,7 @@ def decompress(in_list):
     return out_list
 
 
+#TODO: move to equity app
 def encode(int_list):
     '''
     Turns a list of integers (0..255) into a string of bytes.
@@ -102,6 +105,7 @@ def encode(int_list):
     return ''.join([chr(i) for i in int_list])
 
 
+#TODO: move to equity app
 def decode(string):
     '''
     Turns a string of bytes into a list of integers.
@@ -109,6 +113,7 @@ def decode(string):
     return [ord(c) for c in string]
 
 
+#TODO: move to metasys.parameters.fields
 def round_by_format(float_number, fmt):
     '''
     Rounds a float using the supplied printing format string. Any characters
@@ -174,6 +179,7 @@ def next_weekday(date):
     return date + datetime.timedelta(days=n_days)
 
 
+#TODO: move to pricemanager.download (yahoo)
 def int_factor(float1, float2):
     '''
     Returns integer division if float1 > float 2, and an int fraction if not.
