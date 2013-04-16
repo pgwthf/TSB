@@ -26,7 +26,8 @@ from django.utils.safestring import mark_safe
 
 from channel.models import Channel
 
-from utils_python.utils import round_by_format, str2dict
+from pyutillib.string_utils import str2dict
+#from .utils import round_by_format
 
 from TSB.utils import get_choice
 
@@ -606,6 +607,17 @@ TODO: AAA document format of <parameters>
         <self.variables>.
         This method must return a dict, because it is traversed by metasystem.
         '''
+        def round_by_format(float_number, fmt):
+            '''
+            Rounds a float using the supplied printing format string. Any characters
+            outside { and } are stripped.
+            '''
+            while fmt[0] != '{': 
+                fmt = fmt[1:]
+            while fmt[-1] != '}':
+                fmt = fmt[:-1]
+            string = fmt.format(float_number)
+            return float(string)
         for key in self.parameters:
 #TODO: AA: consider using mode as in modewidget
             choices = self.parameters[key].get('choices', None)

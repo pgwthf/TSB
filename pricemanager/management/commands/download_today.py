@@ -26,7 +26,7 @@ from django.core.management.base import BaseCommand, make_option
 from django.conf import settings
 
 from pricemanager.models import Price
-from utils_python.utils import is_weekday
+from pyutillib.date_utils import is_weekday
 
 
 class Command(BaseCommand):

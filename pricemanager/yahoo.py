@@ -23,7 +23,6 @@ from csv import reader
 from operator import itemgetter
 
 from TSB.utils import notify_admin
-from utils_python.utils import int_factor
 
 
 def download_today(stock_list):
@@ -159,6 +158,20 @@ def _yahoo_history_url(stock_name, fromdate, todate):
     return 'http://ichart.finance.yahoo.com/table.csv?s={}&amp;a={}&amp;b={}' \
             '&amp;c={}&amp;d={}&amp;e={}&amp;f={}&amp;g=d&amp;ignore=.csv'. \
             format(stock_name, m_from, d_from, y_from, m_to, d_to, y_to)
+
+
+def int_factor(float1, float2):
+    '''
+    Returns integer division if float1 > float 2, and an int fraction if not.
+    '''
+    if float1 > float2:
+        divider = int(round(float1/float2))
+    elif float1 < float2:
+        factor = round(float2/float1)
+        divider = 1 / factor if factor > 1 else 1
+    else:
+        divider = 1
+    return divider
 
 
 def _unsplit(data):

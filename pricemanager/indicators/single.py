@@ -9,7 +9,7 @@ Created on 120906
 from __future__ import division
 from __future__ import absolute_import
 
-from utils_python.utils import div
+from pyutillib.math_utils import div
 from pricemanager.indicators.datedlist import DatedList
 
 

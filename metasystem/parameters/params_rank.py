@@ -45,7 +45,7 @@ import operator
 import django_tables2 as tables
 
 import TSB.tables as TSBtables
-from utils_python.utils import div
+from pyutillib.math_utils import div
 from metasystem.parameters.fields import _Param
 from channel.models import Channel
 

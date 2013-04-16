@@ -24,7 +24,7 @@ from django.core.management.base import BaseCommand, make_option
 from django.core.exceptions import ObjectDoesNotExist
 
 from pricemanager.models import Pool
-from utils_python.utils import datestr2date
+from pyutillib.date_utils import datestr2date
 
 
 class Command(BaseCommand):

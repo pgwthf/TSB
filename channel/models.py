@@ -13,7 +13,7 @@ import math
 from django.db import models, transaction
 from django.db.models import Max, Min
 
-from utils_python.utils import div
+from pyutillib.math_utils import div
 from pricemanager.indicators.datedlist import DatedList
 
 

@@ -15,8 +15,8 @@ import glob
 #from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.core.management import call_command
-from utils_python.utils import random_string
+#from django.core.management import call_command
+from pyutillib.string_utils import random_string
 
 import subprocess
 

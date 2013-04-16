@@ -17,7 +17,7 @@ from django.core.urlresolvers import reverse
 
 import django_tables2 as tables
 
-from utils_python.utils import get_dict_values
+from pyutillib.string_utils import str2dict_values
 from TSB.utils import make_link, get_choice
 from TSB.tables import MakeSelectColumn
 from tradesignal.models import Trade
@@ -73,7 +73,7 @@ def MakeSystemsTable(show={'parameters': True, 'performance': True,
         params = tables.Column(orderable=False)
         def render_params(self, record):
             return mark_safe('</td><td>'.join(('{}'.format(v) for v in 
-                    get_dict_values(record.params))))
+                    str2dict_values(record.params))))
         def render_metasystem(self, record):
             return mark_safe(make_link('show_metasystem', record.metasystem.id, 
                     {'metasystem_id': record.metasystem.id}))

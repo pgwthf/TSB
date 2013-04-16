@@ -16,7 +16,7 @@ from pricemanager.models import Pool, Stock
 from metasystem.parameters import params_entry, params_exit
 from metasystem.parameters.fields import _Param, ParamField, ParamFormField
 
-from utils_python.utils import str2dict
+from pyutillib.string_utils import str2dict
 
 class CustomField(TestCase):
 

@@ -16,7 +16,8 @@ from django.shortcuts import render
 import Image, ImageDraw
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
-from utils_python.utils import last_year, datestr2date, date2datestr
+from pyutillib.date_utils import last_year, datestr2date, date2datestr, \
+        next_weekday
 from equity.models import Thumbnail, EquityHistory
 from tradesignal.models import Trade
 from system.models import System
@@ -251,7 +252,6 @@ def draw_market_chart(request, system_id, startdate_str=None, enddate_str=None):
 
 
 
-from utils_python.utils import next_weekday
 from channel.models import Channel
 
 def show_trade(request, trade_id):

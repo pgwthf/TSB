@@ -19,7 +19,7 @@ def tmp_translate():
     '''
     import datetime
     from system.models import System
-    from utils_python.utils import div
+    from pyutillib.math_utils import div
     from django.db import transaction
     systems = System.objects.all()
     with transaction.commit_on_success():

@@ -13,7 +13,7 @@ import collections
 from django.db import models
 #from metasystem.parameters import fields
 
-from utils_python.utils import str2dict
+from pyutillib.string_utils import str2dict
 
 # Only fields from the Results table go here:
 # title is used for generating title headings on params

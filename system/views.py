@@ -15,27 +15,23 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 #from django.forms.formsets import formset_factory
-from django.db import transaction
-from django.db import connection
+#from django.db import transaction
+#from django.db import connection
 
 from django_tables2 import RequestConfig
 
-from system.models import System
-from system.tables import MakeSystemsTable
+from pyutillib.date_utils import next_weekday
+from pyutillib.string_utils import str2dict_keys, str2dict
 
-from utils_python.utils import get_dict_keys, str2dict
+
 from TSB.utils import Notify
-
 from tradesignal.models import Trade
 from equity.models import EquityHistory
-from metasystem.models import MetaSystem
-
-from system.tables import TradesTable, EquityTable, PortfolioTable
-from system.forms import CopyForm, BookmarkForm
-from system.models import OUTPUT_FORMATS, Bookmark
-
-from system.forms import COMP_REVERSE, FilterFormSet
-
+#from metasystem.models import MetaSystem
+from system.models import System, OUTPUT_FORMATS, Bookmark
+from system.tables import MakeSystemsTable, TradesTable, EquityTable, \
+        PortfolioTable
+from system.forms import CopyForm, BookmarkForm, COMP_REVERSE #, FilterFormSet
 from pricemanager.models import Stock
 
 
@@ -72,7 +68,7 @@ def show_bookmarks(request, bookmark_id):
     # generate column_titles
     if systems.count():
         systems_table.base_columns['params'].verbose_name = mark_safe(
-                        '</th><th>'.join(get_dict_keys(systems[0].params)))
+                        '</th><th>'.join(str2dict_keys(systems[0].params)))
         for key, params in OUTPUT_FORMATS.items():
             if 'title' in params:
                 systems_table.base_columns[key].verbose_name = params['title']
@@ -403,7 +399,6 @@ def show_system(request, system_id=None):
 
 
 from system.forms import TradeForm
-from utils_python.utils import next_weekday
 
 @login_required
 def edit_system(request, system_id=None):
@@ -522,7 +517,7 @@ def export_systems_to_csv(request, metasystem_id):
                                                         format(metasystem_id)
     results = System.objects.filter(metasystem=metasystem_id).values()
     column_list = [k for k in OUTPUT_FORMATS]
-    column_list.extend(get_dict_keys(results[0]['params']))
+    column_list.extend(str2dict_keys(results[0]['params']))
     writer = csv.DictWriter(response, column_list, extrasaction='ignore')
     writer.writeheader()
     for result in results:

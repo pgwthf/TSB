@@ -14,7 +14,8 @@ import math
 
 from django.db import models, transaction
 
-from utils_python.utils import compress, encode, decompress, decode, div
+from pyutillib.math_utils import div
+#from .utils import compress, encode, decompress, decode
 
 from pricemanager.indicators.single import StockPrice
 
@@ -209,6 +210,50 @@ class EquityHistory(object):
         totals = self.total.as_list()
         Thumbnail.write_to_db(totals, system, width, height)
 
+
+def compress(in_list):
+    '''
+    Takes a list of tuples of 2 ints and returns a list of bytes where each
+    byte is a concatenation of the first int in 5 bits and the second int in
+    3 bits.
+    '''
+#note: the following would be quicker, but no error checking...
+#    return [x + 32*y for (x, y) in in_list]
+    out_list = []
+    for x,y in in_list:
+        if x < 0 or x > 31 or not isinstance(x, int):
+            raise ValueError('x must be a 5 bit int, but it is {}'.format(x))
+        if y < 0 or y > 7 or not isinstance(y, int):
+            raise ValueError('y must be a 3 bit int, but it is {}'.format(y))
+        out_list.append(x + 32*y)
+    return out_list
+
+def decompress(in_list):
+    '''
+    Takes a list of ints (bytes) Returns a list of tuples of 2 ints. The first
+    int is represented by the first 5 bits of the input byte, the second int
+    by the last 3 bits of the input byte 
+    '''
+#note: the following would be quicker, but no error checking...
+#    return [(x % 32 , x // 32) for x in in_list]
+    out_list = []
+    for x in in_list:
+        if x < 0 or x > 255 or not isinstance(x, int):
+            raise ValueError('x must be an 8 bit int, but it is {}'.format(x))
+        out_list.append((x % 32 , x // 32))
+    return out_list
+
+def encode(int_list):
+    '''
+    Turns a list of integers (0..255) into a string of bytes.
+    '''
+    return ''.join([chr(i) for i in int_list])
+
+def decode(string):
+    '''
+    Turns a string of bytes into a list of integers.
+    '''
+    return [ord(c) for c in string]
 
 
 class Thumbnail(models.Model):

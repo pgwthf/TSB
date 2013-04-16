@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from django.test import TestCase
 
-from utils_python.utils import last_year, previous_weekday, next_weekday
+from pyutillib.date_utils import last_year, previous_weekday, next_weekday
 
 from pricemanager.models import Stock, Price, Pool, StockPoolDates
 from pricemanager.yahoo import _yahoo_today_url, _yahoo_history_url, _unsplit,\

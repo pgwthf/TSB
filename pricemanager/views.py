@@ -10,13 +10,14 @@ from __future__ import absolute_import
 
 import datetime
 
+from pyutillib.date_utils import date2datestr
+
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from django_tables2 import RequestConfig
 
-from utils_python.utils import date2datestr
 from TSB.utils import Notify
 from channel.models import Channel
 from system.models import System

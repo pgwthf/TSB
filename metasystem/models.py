@@ -17,7 +17,9 @@ from django import db
 from django.db import models
 from django.forms.models import model_to_dict
 
-from utils_python.utils import random_string, str2dict, eval_conditions
+from pyutillib.string_utils import random_string, str2dict
+from pyutillib.math_utils import eval_conditions
+
 from pricemanager.models import Pool
 from tradesignal.models import Positions, Trades, Signals #, ExitSignal
 from equity.models import EquityHistory

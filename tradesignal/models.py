@@ -11,7 +11,7 @@ from __future__ import absolute_import
 
 from django.db import models, transaction
 
-from utils_python.utils import div
+from pyutillib.math_utils import div
 from pricemanager.models import Stock
 from metasystem.parameters.fields import _Param
 

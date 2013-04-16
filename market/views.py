@@ -11,7 +11,7 @@ from __future__ import absolute_import
 import datetime
 
 from django.shortcuts import render
-from utils_python.utils import str2dict
+from pyutillib.string_utils import str2dict
 from market.forms import DateForm, ChartSettingsForm
 #from chart.models import get_market_condition
 

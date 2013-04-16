@@ -29,8 +29,9 @@ from django import db
 from django.db import models, transaction
 
 from TSB.utils import notify_admin
-from utils_python.utils import previous_weekday, last_year, random_string, \
-        datestr2date
+from pyutillib.date_utils import previous_weekday, last_year, datestr2date
+from pyutillib.string_utils import random_string
+        
 from chart.models import Chart
 from channel.models import Channel
 

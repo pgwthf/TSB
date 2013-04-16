@@ -27,7 +27,7 @@ from system.models import OUTPUT_FORMATS
 from system.models import System
 from system.tables import MakeSystemsTable
 
-from utils_python.utils import get_dict_keys
+from pyutillib.string_utils import str2dict_keys
 
 
 @login_required
@@ -207,7 +207,7 @@ def show_metasystem(request, metasystem_id):
     # generate column_titles
     if systems.count():
         systems_table.base_columns['params'].verbose_name = mark_safe(
-                        '</th><th>'.join(get_dict_keys(systems[0].params)))
+                        '</th><th>'.join(str2dict_keys(systems[0].params)))
         for key, params in OUTPUT_FORMATS.items():
             if 'title' in params:
                 systems_table.base_columns[key].verbose_name = params['title']
